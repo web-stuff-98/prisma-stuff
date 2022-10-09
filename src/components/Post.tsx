@@ -16,7 +16,7 @@ export type IPost = {
     likes: string[]
 }
 
-export default function Post({ post, key }: { post: IPost, key?: string }) {
+export default function Post({ post }: { post: IPost }) {
     const { push } = useRouter()
 
     const [clickedShared, setClickedShared] = useState(false)
@@ -50,7 +50,7 @@ export default function Post({ post, key }: { post: IPost, key?: string }) {
     }
 
     return (
-        <article key={key} onClick={() => push(`/post/${post.slug}`)} className="p-2 flex text-center gap-1 flex h-full justify-evenly w-full">
+        <article onClick={() => push(`/post/${post.slug}`)} className="p-2 flex text-center gap-1 flex h-full justify-evenly w-full">
             {/*Image*/}
             <div className="relative grow w-1/2 h-48 bg-gray-200 rounded overflow-hidden shadow">
                 <Image layout="fill" objectFit="cover" objectPosition="absolute" src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${post.id}`} />

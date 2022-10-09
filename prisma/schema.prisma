@@ -22,11 +22,12 @@ model Post {
   published    Boolean        @default(false)
   imagePending Boolean        @default(true) @map("image_pending")
   createdAt    DateTime       @default(now())
-  author       User          @relation(fields: [authorId], references: [id])
+  author       User           @relation(fields: [authorId], references: [id])
   authorId     String
   tags         Tag[]
   shares       SharesOnPost[]
   likes        LikesOnPost[]
+
   @@unique([slug])
 }
 
@@ -37,7 +38,7 @@ model Tag {
 }
 
 model SharesOnPost {
-  id String @id @default(cuid())
+  id     Int    @id @default(autoincrement())
   post   Post   @relation(fields: [postId], references: [id])
   postId String
   User   User   @relation(fields: [userId], references: [id])
@@ -47,7 +48,7 @@ model SharesOnPost {
 }
 
 model LikesOnPost {
-  id String @id @default(cuid())
+  id     Int    @id @default(autoincrement())
   post   Post   @relation(fields: [postId], references: [id])
   postId String
   User   User   @relation(fields: [userId], references: [id])

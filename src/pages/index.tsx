@@ -1,6 +1,5 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import Aside from '../components/layout/aside/Aside';
 import Post from '../components/Post';
 
 import prisma from '../lib/prisma'
@@ -38,7 +37,7 @@ const Home = ({ feed }: { feed: any }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='w-full h-full gap-2'>
-        {feed.map((post: any) => <Post key={post.id} key={post.id} post={post} />)}
+        {feed.map((post: any) => <Post key={post.id} post={post} />)}
       </div>
     </div>
   )

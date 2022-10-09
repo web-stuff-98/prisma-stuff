@@ -1,6 +1,6 @@
 import React from "react"
 import { GetServerSidePropsContext } from "next"
-import { useSession, getSession } from "next-auth/react"
+import { getSession } from "next-auth/react"
 import prisma from "../lib/prisma"
 import Post from "../components/Post"
 
@@ -13,7 +13,7 @@ export const getServerSideProps = async ({ req, res }: GetServerSidePropsContext
 
     const drafts = await prisma.post.findMany({
         where: {
-            author: { email: String(session.user.uid) },
+            author: { email: String(session.uid) },
             published: false
         },
         include: {

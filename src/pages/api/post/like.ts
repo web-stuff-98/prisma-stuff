@@ -28,16 +28,17 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     }
                 }
             }) 
-        else
+        else {
             //remove like
             await prisma.post.update({
                 where: {id :req.body.postId},
                 data: {
                     likes: {
-                        delete:{ userId: session.uid }
+                        delete:{ id: String(q.likes.find((like:LikesOnPost) => like.userId === session.uid)?.postId) }
                     }
                 }
             })
+        }
     } catch(e) {
         console.error(e)
         return res.status(500).end()
