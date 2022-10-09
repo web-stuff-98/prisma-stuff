@@ -42,7 +42,8 @@ model SharesOnPost {
   User   User   @relation(fields: [userId], references: [id])
   userId String
 
-  @@unique([userId])
+  @@unique([postId])
+  @@index([userId])
 }
 
 model LikesOnPost {
@@ -51,7 +52,8 @@ model LikesOnPost {
   User   User   @relation(fields: [userId], references: [id])
   userId String
 
-  @@unique([userId])
+  @@unique([postId])
+  @@index([userId])
 }
 
 model Account {

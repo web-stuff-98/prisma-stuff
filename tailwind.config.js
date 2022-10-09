@@ -7,10 +7,10 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: '220px',
-      md: '320px',
-      lg: '400px',
-      xl: '800px'
+      sm: '180px',
+      md: '220px',
+      lg: '300px',
+      xl: '400px'
     },  
     extend: {
       fontFamily: {

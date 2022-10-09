@@ -12,10 +12,10 @@ export default function Profile({ user }: { user: IUserProfile }) {
     return (
         <div className="container mx-auto flex flex-col justify-center">
             <h1 className="text-3xl">{user.name}</h1>
-            <hr/>
+            <hr />
             <div>
                 <h2 className="text-xl">{user.name}'s shares</h2>
-                {user.shares.map((postId: string) => `${postId}`)}
+                {user.shares.map((post: any) => <>{post.title}</>)}
             </div>
         </div>
     )
@@ -30,8 +30,12 @@ export const getServerSideProps = async ({ params }: GetServerSidePropsContext) 
             shares: true
         }
     })
+    const shareIds = q?.shares.map((share: any) => share.postId)
+    const getSharesQ = await prisma.post.findMany({
+        where: { id: { in: shareIds } }
+    })
     let user: any = q
-    user.shares = q?.shares.map((share: any) => share.postId)
+    user.shares = getSharesQ
     return {
         props: { user: JSON.parse(JSON.stringify(user)) },
     };

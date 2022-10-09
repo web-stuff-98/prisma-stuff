@@ -10,6 +10,7 @@ import { GetServerSidePropsContext } from 'next';
 import prisma from '../../lib/prisma';
 import { Post } from '@prisma/client';
 import { useRouter } from 'next/router';
+import ProgressBar from '../../components/progressBar/ProgressBar';
 
 const Editor = ({ post }: { post: any }) => {
     const [resMsg, setResMsg] = useState<IResponseMessage>({ msg: "", err: false, pen: false })
@@ -135,11 +136,10 @@ const Editor = ({ post }: { post: any }) => {
                 rows={8}
                 value={formik.values.content}
             />
-            {progress}
             {resMsg.msg && resMsg.msg}
-            {JSON.stringify(post)}
-            <button type="submit">Submit</button>
-            <button onClick={() => getRandomImage()} type="button">Random image</button>
+            {resMsg.pen && <ProgressBar percent={progress}/>}
+            <button type="submit" className='bg-white border-1 shadow rounded'>Submit</button>
+            <button onClick={() => getRandomImage()} type="button" className='bg-white border-1 shadow rounded'>Random image</button>
             {base64coverImage && <div className='relative rounded mx-auto w-20 h-20'>
                 <Image src={base64coverImage} objectPosition="absolute" objectFit="contain" className="m-1 shadow rounded" layout="fill" />
             </div>}
