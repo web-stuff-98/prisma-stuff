@@ -34,7 +34,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 where: {id :req.body.postId},
                 data: {
                     likes: {
-                        delete:{ id: String(q.likes.find((like:LikesOnPost) => like.userId === session.uid)?.postId) }
+                        delete:{ id: Number(q.likes.find((like:LikesOnPost) => like.userId === session.uid)?.id) }
                     }
                 }
             })

@@ -34,7 +34,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 where: {id :req.body.postId},
                 data: {
                     shares: {
-                        delete:{ id: String(q.shares.find((share:SharesOnPost) => share.userId === session.uid)?.postId) }
+                        delete:{ id: Number(q.shares.find((share:SharesOnPost) => share.userId === session.uid)?.id) }
                     }
                 }
             })
