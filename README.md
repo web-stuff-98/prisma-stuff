@@ -1,0 +1,1 @@
+Like PERN-chat but not crap because it uses TailwindCSS and Prisma

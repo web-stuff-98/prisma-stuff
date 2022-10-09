@@ -1,0 +1,41 @@
+{
+  "name": "nextjs-prisma-base",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.4",
+    "@prisma/client": "^4.4.0",
+    "axios": "^1.1.2",
+    "busboy": "^1.6.0",
+    "cloudinary": "^1.32.0",
+    "formik": "^2.2.9",
+    "next": "12.3.1",
+    "next-auth": "^4.12.3",
+    "pusher": "^5.1.1-beta",
+    "pusher-js": "^7.4.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "react-markdown": "^8.0.3",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@types/busboy": "^1.5.0",
+    "@types/node": "18.8.2",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "autoprefixer": "^10.4.12",
+    "eslint": "8.24.0",
+    "eslint-config-next": "12.3.1",
+    "postcss": "^8.4.17",
+    "prisma": "^4.4.0",
+    "tailwindcss": "^3.1.8",
+    "typescript": "4.8.4"
+  }
+}

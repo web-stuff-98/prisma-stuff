@@ -1,0 +1,8 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+    font-family: 'Poe Vetica New';
+    src: url(/public/PoeVeticaNewMedium-PMvd.ttf) format('ttf');
+};
