@@ -14,17 +14,18 @@ generator client {
 }
 
 model Post {
-  id           String         @id @default(cuid())
+  id           String          @id @default(cuid())
   title        String
   content      String
   description  String
   slug         String
-  published    Boolean        @default(false)
-  imagePending Boolean        @default(true) @map("image_pending")
-  createdAt    DateTime       @default(now())
-  author       User           @relation(fields: [authorId], references: [id])
+  published    Boolean         @default(false)
+  imagePending Boolean         @default(true) @map("image_pending")
+  createdAt    DateTime        @default(now())
+  author       User            @relation(fields: [authorId], references: [id])
   authorId     String
   tags         Tag[]
+  comments     CommentOnPost[]
   shares       SharesOnPost[]
   likes        LikesOnPost[]
 
@@ -55,6 +56,23 @@ model LikesOnPost {
   userId String
 
   @@index([userId])
+}
+
+model CommentOnPost {
+  id                   String                 @id @default(cuid())
+  comment              String
+  Post                 Post?                  @relation(fields: [postId], references: [id])
+  postId               String?
+  CommentOnPostComment CommentOnPostComment[]
+}
+
+model CommentOnPostComment {
+  id        String        @id @default(cuid())
+  comment   CommentOnPost @relation(fields: [commentId], references: [id])
+  commentId String
+  createdAt DateTime      @default(now())
+
+  @@index([id])
 }
 
 model Account {
