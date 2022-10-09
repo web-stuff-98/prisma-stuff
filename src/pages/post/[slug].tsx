@@ -11,7 +11,7 @@ export default function Post({ post }: { post: any }) {
       </div>
       <h1 className="text-3xl mx-auto">{post.title}</h1>
       <h3 className="text-xl mx-auto">{post.description}</h3>
-      <p className="mx-auto">{post.content}</p>
+      <p className="mx-auto text-center">{post.content}</p>
     </div>
   )
 }
