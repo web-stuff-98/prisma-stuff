@@ -61,7 +61,7 @@ model LikesOnPost {
 model CommentOnPost {
   id                   String                 @id @default(cuid())
   comment              String
-  Post                 Post                  @relation(fields: [postId], references: [id])
+  Post                 Post                   @relation(fields: [postId], references: [id])
   postId               String
   User                 User                   @relation(fields: [userId], references: [id])
   userId               String
@@ -69,12 +69,13 @@ model CommentOnPost {
 }
 
 model CommentOnPostComment {
-  id        String        @id @default(cuid())
-  comment   CommentOnPost @relation(fields: [commentId], references: [id])
-  commentId String
-  createdAt DateTime      @default(now())
-  user      User          @relation(fields: [userId], references: [id])
-  userId    String
+  id            String        @id @default(cuid())
+  comment       String
+  commentedOn   CommentOnPost @relation(fields: [commentedOnId], references: [id])
+  commentedOnId String
+  createdAt     DateTime      @default(now())
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String
 
   @@index([id])
 }
@@ -110,19 +111,19 @@ model Session {
 }
 
 model User {
-  id                   String                 @id @default(cuid())
-  name                 String?
-  email                String?                @unique
-  emailVerified        DateTime?
-  role                 Role                   @default(USER)
-  image                String?
-  posts                Post[]
-  accounts             Account[]
-  sessions             Session[]
-  shares               SharesOnPost[]
-  likes                LikesOnPost[]
-  commentsOnComments   CommentOnPostComment[]
-  comments             CommentOnPost[]
+  id                 String                 @id @default(cuid())
+  name               String?
+  email              String?                @unique
+  emailVerified      DateTime?
+  role               Role                   @default(USER)
+  image              String?
+  posts              Post[]
+  accounts           Account[]
+  sessions           Session[]
+  shares             SharesOnPost[]
+  likes              LikesOnPost[]
+  commentsOnComments CommentOnPostComment[]
+  comments           CommentOnPost[]
 }
 
 enum Role {
