@@ -62,7 +62,7 @@ const Editor = ({ post }: { post: any }) => {
                 if (axios.isAxiosError(e)) {
                     e.response ?
                         //@ts-ignore-error
-                        (has(e.response, "data") ? setResMsg({ msg: e.response.data.message, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                        (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
                         : setResMsg({ msg: `${e}`, pen: false, err: true })
                 }
             }
@@ -84,7 +84,7 @@ const Editor = ({ post }: { post: any }) => {
             if (axios.isAxiosError(e)) {
                 e.response ?
                     //@ts-ignore-error
-                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.message, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
                     : setResMsg({ msg: `${e}`, pen: false, err: true })
             }
         }
