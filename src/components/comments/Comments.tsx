@@ -24,25 +24,6 @@ interface IComment {
 export default function Comments({ comments, postId }: { comments: IComment[], postId: string }) {
     const [resMsg, setResMsg] = useState<IResponseMessage>({ msg: '', err: false, pen: false })
 
-    const commentOnComment = async (commentId: string) => {
-        try {
-            setResMsg({ msg: "", err: false, pen: true })
-            await axios({
-                method: "POST",
-                url: "/api/post/comment",
-                data: { comment: commentInput, postId, commentId }
-            })
-            setResMsg({ msg: "", err: false, pen: false })
-        } catch (e: AxiosError | any) {
-            if (axios.isAxiosError(e)) {
-                e.response ?
-                    //@ts-ignore-error
-                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-                    : setResMsg({ msg: `${e}`, pen: false, err: true })
-            }
-        }
-    }
-
     const handleCommentForm = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); comment() }
     const comment = async () => {
         try {
@@ -58,12 +39,10 @@ export default function Comments({ comments, postId }: { comments: IComment[], p
             })
             setResMsg({ msg: "", err: false, pen: false })
         } catch (e: AxiosError | any) {
-            if (axios.isAxiosError(e)) {
-                e.response ?
-                    //@ts-ignore-error
-                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-                    : setResMsg({ msg: `${e}`, pen: false, err: true })
-            }
+            e.response ?
+                //@ts-ignore-error
+                (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                : setResMsg({ msg: `${e}`, pen: false, err: true })
         }
     }
 
@@ -80,12 +59,10 @@ export default function Comments({ comments, postId }: { comments: IComment[], p
             console.log(JSON.stringify(axres.data))
             setCommentThread(axres.data)
         } catch (e: AxiosError | any) {
-            if (axios.isAxiosError(e)) {
-                e.response ?
-                    //@ts-ignore-error
-                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-                    : setResMsg({ msg: `${e}`, pen: false, err: true })
-            }
+            e.response ?
+                //@ts-ignore-error
+                (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                : setResMsg({ msg: `${e}`, pen: false, err: true })
         }
     }
     useEffect(() => {
@@ -95,7 +72,7 @@ export default function Comments({ comments, postId }: { comments: IComment[], p
 
     const [commentInput, setCommentInput] = useState('')
     return (
-        <>
+        <div className="w-full py-6">
             {commentThreadId && <h4 className="mx-auto mt-6 flex items-center gap-3">
                 Viewing replies to {commentThreadAuthorName}&apos;s comment
                 <MdOutlineCancel onClick={() => setCommentThreadId('')} className="text-2xl cursor-pointer" />
@@ -105,14 +82,15 @@ export default function Comments({ comments, postId }: { comments: IComment[], p
                     <Image src={comment.user.image} layout="fill" objectFit="cover" objectPosition="absolute" />
                 </div></Link>}
                 <div className="text-sm grow">{comment.comment}</div>
-                <BsFillReplyFill onClick={() => commentOnComment(comment.id)} className="cursor-pointer text-2xl" />
-                <AiOutlineNodeExpand onClick={() => { setCommentThreadId(comment.id); setCommentThreadAuthorName(comment.user.name) }} className="cursor-pointer text-2xl" />
+                {!commentThreadId &&
+                    <AiOutlineNodeExpand onClick={() => { setCommentThreadId(comment.id); setCommentThreadAuthorName(comment.user.name) }} className="cursor-pointer text-2xl" />
+                }
             </div>)}
             {/* comment input */}
             <form onSubmit={handleCommentForm} className="w-full flex h-20 items-center">
                 <input placeholder={commentThreadId ? "Reply to comment" : "Add comment"} value={commentInput} onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentInput(e.target.value)} type="text" className="w-full border-b border-black h-8" />
                 <button type="submit" className="cursor-pointer"><IoMdSend className="w-8 h-8" /></button>
             </form>
-        </>
+        </div>
     )
 }

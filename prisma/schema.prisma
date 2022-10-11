@@ -65,6 +65,7 @@ model CommentOnPost {
   postId               String
   User                 User                   @relation(fields: [userId], references: [id])
   userId               String
+  createdAt            DateTime               @default(now())
   CommentOnPostComment CommentOnPostComment[]
 }
 

@@ -6,6 +6,11 @@ import pusher from "../../../utils/pusher";
 
 import { nanoid } from "nanoid/async"
 
+/*
+    was going to do comments on comments on comments,
+    but the schema was too confusing. you can reply to comments though.
+*/
+
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if(req.method !== "POST" && req.method !== "PATCH" && req.method !== "GET") return res.status(405).end()
 
@@ -17,9 +22,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         if(req.method === "GET") {
             if(!req.query.commentThreadId) return res.status(400).end()
             //get comment replies thread
-            const q = await prisma.commentOnPostComment.findMany({
-                where: { commentedOnId: String(req.query.commentThreadId) }
-            })
+            const q = await prisma.commentOnPostComment.findMany({ where: { commentedOnId: String(req.query.commentThreadId) } })
             let uids:string[] = []
             q.forEach((comment:CommentOnPostComment) => {
                 if(!uids.includes(comment.userId))
@@ -57,7 +60,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 })
                 await pusher.trigger(`post=${postId}`, 'comment-added', { comment, userId: session.uid })
             } else {
-                //comment on comment
+                //comment on post comment
                 await prisma.commentOnPost.update({
                     where: { id: commentId },
                     data: {

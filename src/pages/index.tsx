@@ -1,6 +1,6 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import Post from '../components/Post';
+import Post from '../components/post/Post';
 
 import prisma from '../lib/prisma'
 
@@ -19,8 +19,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const feed = q.map((data: any) => ({
     ...data,
     tags: data.tags.map((tag: any) => tag.name),
-    shares: data.shares.map((share:any) => share.userId),
-    likes: data.likes.map((share:any) => share.userId),
   }))
   return {
     props: { feed: JSON.parse(JSON.stringify(feed)) },
