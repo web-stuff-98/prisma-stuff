@@ -3,61 +3,13 @@ import prisma from "../../lib/prisma";
 
 import Image from "next/image";
 
-import { IoMdSend } from "react-icons/io"
-import { BsFillReplyFill } from "react-icons/bs"
-
-import { ChangeEvent, useState } from "react";
-import type { FormEvent } from "react";
-import axios, { AxiosError } from "axios";
+import { useState } from "react";
 import IResponseMessage from "../../interfaces/IResponseMessage";
 
-import has from "lodash/has"
-import { User } from "@prisma/client";
+import Comments from "../../components/comments/Comments";
 
 export default function Post({ post }: { post: any }) {
   const [resMsg, setResMsg] = useState<IResponseMessage>({ msg: '', err: false, pen: false })
-
-
-  const commentOnComment = async (commentId:string) => {
-    try {
-      setResMsg({ msg: "", err: false, pen: true })
-      await axios({
-        method: "POST",
-        url: "/api/post/comment",
-        data: { comment: commentInput, postId: post.id, commentId }
-      })
-      setResMsg({ msg: "", err: false, pen: false })
-    } catch (e: AxiosError | any) {
-      if (axios.isAxiosError(e)) {
-        e.response ?
-          //@ts-ignore-error
-          (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-          : setResMsg({ msg: `${e}`, pen: false, err: true })
-      }
-    }
-  }
-
-  const handleCommentForm = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); comment() }
-  const comment = async () => {
-    try {
-      setResMsg({ msg: "", err: false, pen: true })
-      await axios({
-        method: "POST",
-        url: "/api/post/comment",
-        data: { comment: commentInput, postId: post.id }
-      })
-      setResMsg({ msg: "", err: false, pen: false })
-    } catch (e: AxiosError | any) {
-      if (axios.isAxiosError(e)) {
-        e.response ?
-          //@ts-ignore-error
-          (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-          : setResMsg({ msg: `${e}`, pen: false, err: true })
-      }
-    }
-  }
-
-  const [commentInput, setCommentInput] = useState('')
 
   return (
     <div className="flex flex-col justify-center p-3">
@@ -67,18 +19,7 @@ export default function Post({ post }: { post: any }) {
       <h1 className="text-3xl mx-auto">{post.title}</h1>
       <h3 className="text-xl mx-auto">{post.description}</h3>
       <p className="mx-auto text-center">{post.content}</p>
-      {post.comments.map((comment: any) => <div className="w-full p-1 flex gap-2 items-center">
-        <div className="relative w-8 h-8 overflow-hidden rounded-full">
-          <Image src={comment.user.image} layout="fill" objectFit="cover" objectPosition="absolute" />
-        </div>
-        <div className="text-sm">{comment.comment}</div>
-        <BsFillReplyFill onClick={() => commentOnComment(comment.id)} className="cursor-pointer" />
-      </div>)}
-      {/* comment input */}
-      <form onSubmit={handleCommentForm} className="w-full flex h-20 items-center">
-        <input value={commentInput} onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentInput(e.target.value)} type="text" className="w-full border-b border-black h-8" />
-        <button type="submit" className="cursor-pointer"><IoMdSend className="w-8 h-8" /></button>
-      </form>
+      <Comments comments={post.comments} postId={post.id} />
     </div>
   )
 }
