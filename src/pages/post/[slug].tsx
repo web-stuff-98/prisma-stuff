@@ -3,16 +3,22 @@ import prisma from "../../lib/prisma";
 
 import Image from "next/image";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IResponseMessage from "../../interfaces/IResponseMessage";
 
 import Comments from "../../components/comments/Comments";
-import { has } from "lodash";
-import Link from "next/link";
 import PostAuthor from "../../components/post/PostAuthor";
+import { CommentOnPost, CommentOnPostComment } from "@prisma/client";
+import { useUsers } from "../../context/UsersContext";
 
 export default function Post({ post }: { post: any }) {
   const [resMsg, setResMsg] = useState<IResponseMessage>({ msg: '', err: false, pen: false })
+
+  const { findUserData, cacheProfileDataForUser } = useUsers()
+
+  useEffect(() => {
+    cacheProfileDataForUser(post.author.id)
+  }, [])
 
   return (
     <div className="flex flex-col justify-center p-3">
@@ -22,7 +28,7 @@ export default function Post({ post }: { post: any }) {
       <h1 className="text-4xl mx-auto mt-3">{post.title}</h1>
       <h3 className="text-2xl mx-auto">{post.description}</h3>
       <div className="py-2 mx-auto">
-      <PostAuthor post={post} />
+        <PostAuthor authorData={findUserData(post.author.id)} post={post} />
       </div>
       <p className="mx-auto text-center">{post.content}</p>
       <Comments inComments={post.comments} postId={post.id} />
@@ -40,11 +46,21 @@ export const getServerSideProps = async ({ params }: GetServerSidePropsContext) 
         select: { name: true, image: true, id: true },
       },
       comments: true,
-      shares:true,
-      likes:true
+      shares: true,
+      likes: true
     },
   });
+  let out = JSON.parse(JSON.stringify(post))
+  out.comments = await Promise.all(out.comments.map((comment: CommentOnPost) => {
+    return new Promise((resolve, reject) => {
+      prisma.commentOnPostComment.findMany({ where: { commentedOnId: comment.id } })
+        .then((res: CommentOnPostComment[]) => {
+          resolve({ ...comment, replies: res.length })
+        })
+        .catch((e) => reject(e))
+    })
+  }))
   return {
-    props: { post: JSON.parse(JSON.stringify(post)) },
+    props: { post: out },
   };
 };

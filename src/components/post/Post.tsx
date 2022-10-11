@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { AiOutlineShareAlt, AiOutlineLike } from "react-icons/ai"
+import { useUsers } from "../../context/UsersContext"
 import PostAuthor from "./PostAuthor"
 
 export type IPost = {
@@ -21,7 +22,7 @@ export type IPost = {
 export default function Post({ post }: { post: IPost }) {
     const { push } = useRouter()
 
-    const { data: session } = useSession()
+    const { findUserData } = useUsers()
 
     return (
         <article onClick={() => push(`/post/${post.slug}`)} className="p-2 flex text-center gap-1 flex h-full justify-evenly w-full">
@@ -32,7 +33,7 @@ export default function Post({ post }: { post: IPost }) {
             <div className="flex flex-col justify-center items-start w-full mx-auto p-1">
                 <h3 className="text-3xl text-left">{post.title}</h3>
                 <p className="text-lg text-left">{post.description}</p>
-                <PostAuthor post={post}/>
+                <PostAuthor authorData={findUserData(post.author.id)} post={post} />
                 <div className="flex py-2 justify-start items-start w-full gap-1">
                     {post.tags.map((tag: string) => <div className="text-xs rounded-sm cursor-pointer bg-slate-300 text-white drop-shadow hover:bg-sky-600 py-0.5 px-2">{tag}</div>)}
                 </div>

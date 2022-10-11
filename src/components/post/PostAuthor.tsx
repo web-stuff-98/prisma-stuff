@@ -8,8 +8,9 @@ import Image from "next/image"
 
 import axios from "axios"
 import { useRouter } from "next/router"
+import { IUser, useUsers } from "../../context/UsersContext"
 
-export default function PostAuthor({ post }: { post: IPost }) {
+export default function PostAuthor({ post, authorData }: { post: IPost, authorData: IUser }) {
     const [clickedShared, setClickedShared] = useState(false)
     const [clickedLiked, setClickedLiked] = useState(false)
 
@@ -44,20 +45,22 @@ export default function PostAuthor({ post }: { post: IPost }) {
 
     return (
         <div className="flex gap-1 items-center">
+            {authorData && <>
             <div className="flex flex-col text-xs items-center justify-center">
                 <div className="flex items-center">
                     <AiOutlineShareAlt onClick={() => share()} style={{ strokeWidth: "2px" }} className="text-black w-4 h-4 drop-shadow cursor-pointer" />
-                    {post.shares.length + ((clickedShared && session) ? (post.shares.find((share:any) => share.userId === String(session?.uid)) ? -1 : 1) : 0)}
+                    {post.shares.length + ((clickedShared && session) ? (post.shares.find((share: any) => share.userId === String(session?.uid)) ? -1 : 1) : 0)}
                 </div>
                 <div className="flex items-center">
                     <AiOutlineLike onClick={() => like()} style={{ strokeWidth: "2px" }} className="text-black w-4 h-4 drop-shadow cursor-pointer" />
-                    {post.likes.length + ((clickedLiked && session) ? (post.likes.find((like:any) => like.userId === String(session?.uid)) ? -1 : 1) : 0)}
+                    {post.likes.length + ((clickedLiked && session) ? (post.likes.find((like: any) => like.userId === String(session?.uid)) ? -1 : 1) : 0)}
                 </div>
             </div>
             <div onClick={() => push(`/profile/${post.author.id}`)} className="bg-stone-500 cursor-pointer overflow-hidden shadow h-7 w-7 rounded-full relative">
-                <Image layout="fill" src={post.author.image} />
+                <Image layout="fill" src={authorData.image} />
             </div>
-            <span className="text-xs text-gray-500">by {post.author.name}</span>
+            <span className="text-xs text-gray-500">by {authorData.name}</span>
+            </>}
         </div>
     )
 }

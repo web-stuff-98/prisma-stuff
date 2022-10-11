@@ -7,17 +7,20 @@ import 'tailwindcss/tailwind.css'
 
 import { Session } from 'next-auth';
 import PusherProvider from '../context/PusherContext';
+import UsersProvider from '../context/UsersContext';
 
 const App = ({ Component, pageProps }: AppProps<{
   session: Session;
 }>) => {
   return (
     <SessionProvider session={pageProps.session}>
-      <PusherProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </PusherProvider>
+      <UsersProvider>
+        <PusherProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </PusherProvider>
+      </UsersProvider>
     </SessionProvider>
   );
 };

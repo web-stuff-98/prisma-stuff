@@ -23,19 +23,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             if(!req.query.commentThreadId) return res.status(400).end()
             //get comment replies thread
             const q = await prisma.commentOnPostComment.findMany({ where: { commentedOnId: String(req.query.commentThreadId) } })
-            let uids:string[] = []
-            q.forEach((comment:CommentOnPostComment) => {
-                if(!uids.includes(comment.userId))
-                    uids.push(comment.userId)
-            })
-            const users = await Promise.all(uids.map((uid:string) => {
-                return new Promise((resolve, reject) => {
-                    prisma.user.findUniqueOrThrow({ where: { id:uid }, select: { id:true, name:true, image:true } })
-                    .then((u:Partial<User>) => resolve(u))
-                    .catch((e) => reject(e))
-                })
-            }))
-            return res.status(200).json(q.map((comment:CommentOnPostComment) => ({...comment, user: users.find((u:any) => u.id === comment.userId)})))
+            return res.status(200).json(q)
         }
         if(req.method === "PATCH" || req.method === "POST") {
         if(!comment || comment.trim() === "") return res.status(400).json({msg:"Cannot submit an empty comment"})

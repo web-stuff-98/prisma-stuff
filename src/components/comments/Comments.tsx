@@ -20,6 +20,8 @@ interface IComment {
     comment: string
     id: string
     userId: string
+    replies?: number
+    createdAt: string
 }
 
 export default function Comments({ inComments, postId }: { inComments: IComment[], postId: string }) {
@@ -39,30 +41,35 @@ export default function Comments({ inComments, postId }: { inComments: IComment[
         if (!pusher) return
         const channel = pusher.subscribe(`post=${postId}`)
         channel.bind('comment-added', (data: any) => {
-            setComments(old => [...old, data])
+            setComments(old => [...old, { ...data, replies: 0 }])
         })
         channel.bind('comment-on-comment-added', (data: any) => {
-            if (!commentThreadId) return
-            if (data.commentThreadId === commentThreadId)
-                setCommentThread(old => [...old, { comment: data.comment, userId: data.userId, id: data.id }])
+            if (data.commentThreadId === commentThreadId && commentThreadId)
+                setCommentThread(old => [...old, { comment: data.comment, userId: data.userId, id: data.id, createdAt: data.createdAt }])
+            setComments((old: any) => {
+                const matchingComment = old.find((comment: IComment) => comment.id === data.commentThreadId)
+                //have to use filter here because the state was not updating properly with spread operators
+                //react state is weird
+                return [...old.filter((comment: IComment) => comment.id !== data.commentThreadId), { ...matchingComment, replies: Number(matchingComment?.replies) + 1 }]
+                    .sort((a: IComment, b: IComment) => (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
+            })
         })
         channel.bind('comment-updated', (data: any) => {
             setComments((old: IComment[]) => {
                 let newComments = old
                 const i = old.findIndex((comment: IComment) => comment.id === data.id)
                 if (i !== -1)
-                    newComments[i] = data
+                    newComments[i] = { ...old[i], ...data }
                 return newComments
             })
         })
         channel.bind('comment-on-comment-updated', (data: any) => {
-            if (!commentThreadId) return
-            if (data.commentThreadId === commentThreadId)
+            if (data.commentThreadId === commentThreadId && commentThreadId)
                 setCommentThread((old: IComment[]) => {
                     let newComments = old
-                    const i = old.findIndex((comment: IComment) => comment.id === data.id)
+                    const i = old.findIndex((comment: IComment) => comment.id === data.commentThreadId)
                     if (i !== -1)
-                        newComments[i] = { comment: data.comment, userId: data.userId, id: data.id }
+                        newComments[i] = { comment: data.comment, userId: data.userId, id: data.id, createdAt: data.createdAt }
                     return newComments
                 })
         })
@@ -128,7 +135,9 @@ export default function Comments({ inComments, postId }: { inComments: IComment[
                 </div></Link>}
                 <div className="text-sm grow">{comment.comment}</div>
                 {!commentThreadId &&
-                    <RiReplyAllFill onClick={() => { setCommentThreadId(comment.id); setCommentThreadAuthorId(comment.userId) }} className="cursor-pointer text-2xl mx-1" />
+                    <><div className="text-xs">{comment.replies} replies</div>
+                        <RiReplyAllFill onClick={() => { setCommentThreadId(comment.id); setCommentThreadAuthorId(comment.userId) }} className="cursor-pointer text-2xl mx-1" />
+                    </>
                 }
             </div>)}
             {/* comment input */}

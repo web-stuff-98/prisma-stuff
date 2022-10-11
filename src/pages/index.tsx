@@ -4,12 +4,15 @@ import Post from '../components/post/Post';
 
 import prisma from '../lib/prisma'
 
+import { useEffect } from "react"
+import { useUsers } from '../context/UsersContext';
+
 export const getStaticProps: GetStaticProps = async () => {
   const q = await prisma.post.findMany({
-    where: { published: true, imagePending:false },
+    where: { published: true, imagePending: false },
     include: {
       author: {
-        select: { name: true, image: true, id:true },
+        select: { id: true },
       },
       tags: true,
       shares: true,
@@ -26,7 +29,14 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const Home = ({ feed }: { feed: any }) => {
+const Home = ({ feed }: { feed: any[] }) => {
+  const { cacheProfileDataForUser } = useUsers()
+
+  useEffect(() => {
+    if (!feed) return
+    feed.forEach((post: any) => cacheProfileDataForUser(post.author.id))
+  }, [feed])
+
   return (
     <div className='flex justify-between w-full mx-auto p-2'>
       <Head>
@@ -35,7 +45,7 @@ const Home = ({ feed }: { feed: any }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='w-full h-full gap-2'>
-        {feed.map((post: any) => <Post key={post.id} post={post} />)}
+        {feed.map((post: any) => <Post key={post.id} post={post}/>)}
       </div>
     </div>
   )
