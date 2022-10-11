@@ -18,7 +18,7 @@ export default function Nav() {
     const menuIconRef = useRef<HTMLDivElement>(null)
     const searchRef = useRef<HTMLDivElement>(null)
     return (
-        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear", }} className="font-bold shadow sm:h-6 md:h-6 flex sm:w-full sm:pl-1 sm:bg-gray-900 md:bg-white h-full fixed border-b border-black top z-50">
+        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear", }} className="font-bold sm:h-6 md:h-6 flex sm:w-full sm:pl-1 sm:bg-gray-900 md:bg-white h-full outline outline-1 outline-gray-200">
             <div ref={navInnerRef} className="flex justify-between items-center h-full w-full md:container mx-auto my-auto ">
                 <div className={mobileMenuOpen ? "flex flex-col gap-6 items-start" : "flex items-center"}>
                     {/* Navlinks / Hamburger Icon */}

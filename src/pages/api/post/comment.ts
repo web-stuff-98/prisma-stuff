@@ -58,7 +58,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     where: { id: postId },
                     data: { comments: { create: { comment, userId: session.uid, id } } },
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-added', { comment, userId: session.uid })
+                await pusher.trigger(`post=${postId}`, 'comment-added', { comment, userId: session.uid, id })
             } else {
                 //comment on post comment
                 await prisma.commentOnPost.update({
@@ -73,23 +73,22 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                         }
                     }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-on-comment-added', { comment, userId: session.uid, id:commentId })
+                await pusher.trigger(`post=${postId}`, 'comment-on-comment-added', { comment, userId: session.uid, commentThreadId:commentId, id })
             }
         }
         if(req.method === "PATCH") {
-            if(!req.body.commentId) {
-                const id = await nanoid()
+            if(commentId) {
                 await prisma.commentOnPost.update({
                     where: { id: commentId },
                     data: { comment }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-updated', { comment, userId: session.uid, id })
+                await pusher.trigger(`post=${postId}`, 'comment-updated', { comment, userId: session.uid, commentId })
             } else {
                 await prisma.commentOnPostComment.update({
                     where: { id: commentId },
                     data: { comment }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-on-comment-updated', { comment, userId: session.uid, id:commentId })
+                await pusher.trigger(`post=${postId}`, 'comment-on-comment-updated', { comment, userId: session.uid, commentThreadId:commentId, id:commentId })
             } 
         }
         return res.status(200).end()

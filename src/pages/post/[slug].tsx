@@ -25,7 +25,7 @@ export default function Post({ post }: { post: any }) {
       <PostAuthor post={post} />
       </div>
       <p className="mx-auto text-center">{post.content}</p>
-      <Comments comments={post.comments} postId={post.id} />
+      <Comments inComments={post.comments} postId={post.id} />
     </div>
   )
 }
@@ -44,23 +44,7 @@ export const getServerSideProps = async ({ params }: GetServerSidePropsContext) 
       likes:true
     },
   });
-  let out = JSON.parse(JSON.stringify(post))
-  let uids: string[] = []
-  if (has(out, "comments")) {
-    out.comments.forEach((comment: any) => { if (!uids.includes(comment.userId)) { uids.push(comment.userId) } })
-    const users = await Promise.all(uids.map((uid: string) => {
-      return new Promise((resolve, reject) => {
-        prisma.user.findUnique({ where: { id: uid } })
-          .then((user: any) => resolve(user))
-          .catch((e: any) => reject(e))
-      })
-    }))
-    out.comments = post?.comments.map((comment: any) => {
-      const matchingUser = users.find((user: any) => user.id === comment.userId)
-      return { ...comment, user: matchingUser }
-    })
-  }
   return {
-    props: { post: JSON.parse(JSON.stringify(out)) },
+    props: { post: JSON.parse(JSON.stringify(post)) },
   };
 };
