@@ -16,7 +16,6 @@ const UsersContext = createContext<
 >(undefined)
 
 export default function UsersProvider({ children }: { children: ReactNode }) {
-
     const [users, setUsers] = useState<IUser[]>([])
 
     const findUserData = useCallback((uid: string) => users.find((u: IUser) => u.id === uid), [users])

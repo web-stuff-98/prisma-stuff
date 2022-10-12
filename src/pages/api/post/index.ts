@@ -5,6 +5,7 @@ import prisma from "../../../lib/prisma";
 import cloudinary from "cloudinary"
 
 import {nanoid} from "nanoid/async"
+import imageProcessing from "../../../utils/imageProcessing";
 
 cloudinary.v2.config({
     cloud_name: "dzpzb3uzn",
@@ -13,7 +14,7 @@ cloudinary.v2.config({
 })
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
-    const { title, content, description, tags:rawTags } = req.body
+    const { title, content, description, tags:rawTags, base64coverImage } = req.body
     const tags = rawTags.split("#").filter((tag:string) => tag !== "").map((tag:string) => ({name: tag.trim().toLocaleLowerCase()}))
 
     const session = await getSession({req})
@@ -23,7 +24,6 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if(req.method === "POST") {
         try {
             const slug = String(title).toLowerCase().replaceAll(" ", "-").replace(/[^\w-]+/g, '')
-
             const created = await prisma.post.create({
             data: {
                     title,
@@ -32,6 +32,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     slug: slug + "-" + await nanoid(8),
                     author: { connect: { id: String(session?.uid) } },
                     published:true,
+                    blur: await imageProcessing(base64coverImage, { width: 32, height: 20 }),
                     tags: {
                         create: tags
                     }

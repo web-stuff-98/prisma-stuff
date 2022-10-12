@@ -44,7 +44,7 @@ const Editor = ({ post }: { post: any }) => {
                 const axres = await axios({
                     url: postEditingId ? `/api/post?id=${postEditingId}` : "/api/post",
                     method: postEditingId ? 'PATCH' : 'POST',
-                    data: postEditingId && base64coverImage ? { ...values, withImage: true } : values
+                    data: postEditingId && base64coverImage ? { ...values, withImage: true, base64coverImage } : {...values, base64coverImage}
                 })
                 if (base64coverImage) {
                     const formData = new FormData()

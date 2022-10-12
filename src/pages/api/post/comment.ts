@@ -16,7 +16,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
     const session = await getSession({req})
 
-    if(!session) return res.status(403).end()
+    if(!session && req.method !== "GET") return res.status(403).end()
     try {
         const {comment, postId, commentId} = req.body
         if(req.method === "GET") {
@@ -35,7 +35,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 comments: true
             }
         })
-        if(q?.comments.find((comment:CommentOnPost) => (comment.userId === session.uid && comment.comment === req.body.comment))) {
+        if(q?.comments.find((comment:CommentOnPost) => (comment.userId === session?.uid && comment.comment === req.body.comment))) {
             return res.status(400).json({msg:"You have already made that comment"})
         }
         if(req.method === "POST") {
@@ -44,9 +44,9 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 //add comment (no comment id, meaning adding a comment to a post, not adding a comment to a comment on a post)
                 await prisma.post.update({
                     where: { id: postId },
-                    data: { comments: { create: { comment, userId: session.uid, id } } },
+                    data: { comments: { create: { comment, userId: String(session?.uid), id } } },
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-added', { comment, userId: session.uid, id })
+                await pusher.trigger(`post=${postId}`, 'comment-added', { comment, userId: session?.uid, id })
             } else {
                 //comment on post comment
                 await prisma.commentOnPost.update({
@@ -55,13 +55,13 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                         CommentOnPostComment: {
                             create: {
                                 id,
-                                userId: session.uid,
+                                userId: String(session?.uid),
                                 comment,
                             }
                         }
                     }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-on-comment-added', { comment, userId: session.uid, commentThreadId:commentId, id })
+                await pusher.trigger(`post=${postId}`, 'comment-on-comment-added', { comment, userId: session?.uid, commentThreadId:commentId, id })
             }
         }
         if(req.method === "PATCH") {
@@ -70,13 +70,13 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     where: { id: commentId },
                     data: { comment }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-updated', { comment, userId: session.uid, commentId })
+                await pusher.trigger(`post=${postId}`, 'comment-updated', { comment, userId: session?.uid, commentId })
             } else {
                 await prisma.commentOnPostComment.update({
                     where: { id: commentId },
                     data: { comment }
                 })
-                await pusher.trigger(`post=${postId}`, 'comment-on-comment-updated', { comment, userId: session.uid, commentThreadId:commentId, id:commentId })
+                await pusher.trigger(`post=${postId}`, 'comment-on-comment-updated', { comment, userId: session?.uid, commentThreadId:commentId, id:commentId })
             } 
         }
         return res.status(200).end()

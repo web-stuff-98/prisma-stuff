@@ -8,6 +8,7 @@ import 'tailwindcss/tailwind.css'
 import { Session } from 'next-auth';
 import PusherProvider from '../context/PusherContext';
 import UsersProvider from '../context/UsersContext';
+import { ModalProvider } from '../context/ModalContext';
 
 const App = ({ Component, pageProps }: AppProps<{
   session: Session;
@@ -16,9 +17,11 @@ const App = ({ Component, pageProps }: AppProps<{
     <SessionProvider session={pageProps.session}>
       <UsersProvider>
         <PusherProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <ModalProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ModalProvider>
         </PusherProvider>
       </UsersProvider>
     </SessionProvider>

@@ -23,6 +23,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
+    "sharp": "^0.31.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@types/node": "18.8.2",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
+    "@types/sharp": "^0.31.0",
     "autoprefixer": "^10.4.12",
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
