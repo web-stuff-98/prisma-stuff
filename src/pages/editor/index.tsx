@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import type { ChangeEvent } from "react"
 import IResponseMessage from '../../interfaces/IResponseMessage';
 
 import { useFormik } from 'formik';
@@ -8,7 +9,6 @@ import Image from 'next/image';
 import { GetServerSidePropsContext } from 'next';
 
 import prisma from '../../lib/prisma';
-import { Post } from '@prisma/client';
 import { useRouter } from 'next/router';
 import ProgressBar from '../../components/progressBar/ProgressBar';
 
@@ -44,7 +44,7 @@ const Editor = ({ post }: { post: any }) => {
                 const axres = await axios({
                     url: postEditingId ? `/api/post?id=${postEditingId}` : "/api/post",
                     method: postEditingId ? 'PATCH' : 'POST',
-                    data: postEditingId && base64coverImage ? { ...values, withImage: true, base64coverImage } : {...values, base64coverImage}
+                    data: postEditingId && base64coverImage ? { ...values, withImage: true, base64coverImage } : { ...values, base64coverImage }
                 })
                 if (base64coverImage) {
                     const formData = new FormData()
@@ -59,12 +59,10 @@ const Editor = ({ post }: { post: any }) => {
                 }
                 setResMsg({ msg: postEditingId ? "Post updated" : "Post created", err: false, pen: false })
             } catch (e: AxiosError | any) {
-                if (axios.isAxiosError(e)) {
-                    e.response ?
-                        //@ts-ignore-error
-                        (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-                        : setResMsg({ msg: `${e}`, pen: false, err: true })
-                }
+                e.response ?
+                    //@ts-ignore-error
+                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                    : setResMsg({ msg: `${e}`, pen: false, err: true })
             }
         }
     })
@@ -73,7 +71,7 @@ const Editor = ({ post }: { post: any }) => {
         try {
             const axres = await axios({
                 method: "GET",
-                url: `https://picsum.photos/${Math.random() > 0.5 ? 900 : 600}/${Math.random() > 0.5 ? 900 : 600}`,
+                url: `https://picsum.photos/1200/600`,
                 headers: { "Content-type": "image/jpeg" },
                 responseType: "arraybuffer"
             })
@@ -81,20 +79,30 @@ const Editor = ({ post }: { post: any }) => {
             const base64 = `data:image/jpeg;base64, ${bufferString}`
             setBase64coverImage(base64)
         } catch (e: AxiosError | any) {
-            if (axios.isAxiosError(e)) {
-                e.response ?
-                    //@ts-ignore-error
-                    (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
-                    : setResMsg({ msg: `${e}`, pen: false, err: true })
-            }
+            e.response ?
+                //@ts-ignore-error
+                (has(e.response, "data") ? setResMsg({ msg: e.response.data.msg, err: true, pen: false }) : setResMsg({ msg: `${e}`, pen: false, err: true }))
+                : setResMsg({ msg: `${e}`, pen: false, err: true })
         }
     }
 
+    const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
+        //@ts-ignore-error
+        if (!e.target.files[0]) return
+        //@ts-ignore-error
+        const file: File = e.target.files[0]
+        const fr = new FileReader()
+        fr.readAsDataURL(file)
+        fr.onloadend = () => setBase64coverImage(String(fr.result))
+    }
+
+
+    const hiddenFileInputRef = useRef<HTMLInputElement>(null)
     return (
         <form className='container p-1 mx-auto gap-2 flex flex-col' onSubmit={formik.handleSubmit}>
             <label className='mx-auto mt-1' htmlFor='title'>Title</label>
             <input
-                className='p-1 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
+                className='p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
                 autoFocus
                 onChange={formik.handleChange}
                 placeholder="Title"
@@ -105,7 +113,7 @@ const Editor = ({ post }: { post: any }) => {
             />
             <label className='mx-auto mt-1' htmlFor='description'>Description</label>
             <input
-                className='p-1 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
+                className='p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
                 autoFocus
                 onChange={formik.handleChange}
                 placeholder="Description"
@@ -116,7 +124,7 @@ const Editor = ({ post }: { post: any }) => {
             />
             <label className='mx-auto mt-1' htmlFor='tags'>Tags (start each tag with #)</label>
             <input
-                className='p-1 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
+                className='p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
                 autoFocus
                 onChange={formik.handleChange}
                 placeholder="Tags"
@@ -127,7 +135,7 @@ const Editor = ({ post }: { post: any }) => {
             />
             <label className='mx-auto mt-1' htmlFor='content'>Content</label>
             <textarea
-                className='p-1 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
+                className='p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
                 cols={50}
                 onChange={formik.handleChange}
                 placeholder="Content"
@@ -137,11 +145,13 @@ const Editor = ({ post }: { post: any }) => {
                 value={formik.values.content}
             />
             {resMsg.msg && resMsg.msg}
-            {resMsg.pen && <ProgressBar percent={progress}/>}
-            <button type="submit" className='bg-white border-1 shadow rounded'>Submit</button>
-            <button onClick={() => getRandomImage()} type="button" className='bg-white border-1 shadow rounded'>Random image</button>
-            {base64coverImage && <div className='relative rounded mx-auto w-20 h-20'>
-                <Image src={base64coverImage} objectPosition="absolute" objectFit="contain" className="m-1 shadow rounded" layout="fill" />
+            {resMsg.pen && <ProgressBar percent={progress} />}
+            <input onChange={handleFileInput} type="file" ref={hiddenFileInputRef} style={{ display: "none" }} accept=".jpg,.jpeg,.png" />
+            <button type="submit" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Submit</button>
+            <button onClick={() => hiddenFileInputRef.current?.click()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Select image</button>
+            <button onClick={() => getRandomImage()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Random image</button>
+            {base64coverImage && <div className='relative rounded mx-auto w-96 h-48'>
+                <Image src={base64coverImage} objectPosition="absolute" objectFit="contain" className="m-1 shadow-lg rounded" layout="fill" />
             </div>}
         </form>
     );

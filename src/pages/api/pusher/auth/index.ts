@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import pusher from '../../../../../utils/pusher'
-
+import { getSession } from 'next-auth/react'
+import pusher from '../../../../utils/pusher'
 
 /**
  * You need to enable private channels in your pusher app dashboard...
@@ -16,15 +16,15 @@ export default async function handler(
 ) {
     if (req.method !== "POST") return res.status(405).end()
 
-    const authCheck = await checkAuth(req.cookies)
-    if (!authCheck) return res.status(401).json({ message: "Unauthorized" })
+    const session = await getSession({req})
+    if(!session) return res.status(403).json({msg:"Unauthorized"})
 
     try {
         const { socket_id: socketId, channel_name: channel } = req.body
         const authRes = pusher.authorizeChannel(socketId, channel)
         if (channel.includes("inbox=")) {
-            const id = Number(channel.split("inbox=")[1])
-            if (id !== authCheck.id) return res.status(403).end()
+            const id = channel.split("inbox=")[1]
+            if (id !== session.uid) return res.status(403).json({msg:"Unauthorized"})
         }
         res.send(authRes)
     } catch (e) {

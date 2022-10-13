@@ -27,7 +27,6 @@ export default function UsersProvider({ children }: { children: ReactNode }) {
                 method: "GET",
                 url: `/api/user?uid=${uid}`,
             })
-            console.log(`USER DATA : ` + JSON.stringify(axres.data))
             setUsers([...users, axres.data])
         } catch (e: AxiosError | any) {
             console.error(e)

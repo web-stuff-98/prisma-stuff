@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   purge: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   content: [
@@ -7,14 +9,18 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: '200px',
-      md: '500px',
+      sm: '400px',
+      md: '550px',
       lg: '650px',
       xl: '860px'
     },  
     extend: {
       fontFamily: {
-        'sans': ['Poe Vetica New', 'Helvetica', 'Arial', 'sans-serif']
+        Inter: ["Inter Tight", ...defaultTheme.fontFamily.sans],
+        Kanit: ["Kanit", ...defaultTheme.fontFamily.sans]
+      },
+      colors: {
+        background: "rgb(21,21,24)"
       }
     },
   },

@@ -26,9 +26,9 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             const slug = String(title).toLowerCase().replaceAll(" ", "-").replace(/[^\w-]+/g, '')
             const created = await prisma.post.create({
             data: {
-                    title,
+                    title:title.trim(),
                     content,
-                    description,
+                    description:description.trim(),
                     slug: slug + "-" + await nanoid(8),
                     author: { connect: { id: String(session?.uid) } },
                     published:true,
@@ -60,9 +60,9 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                 id: String(id),
             },
             data: {
-                    title,
+                    title:title.trim(),
                     content,
-                    description,
+                    description:description.trim(),
                     published:true,
                     ...(req.body.withImage ? {imagePending:true} : {})
                 }

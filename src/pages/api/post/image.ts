@@ -26,6 +26,12 @@ export default async function handler(
     const { postId } = req.query
     if (!postId) return res.status(400).end()
 
+    try {
+        await prisma.post.findUniqueOrThrow({ where: { id:String(postId) } } )
+    } catch (e) {
+        return res.status(400).json({msg:"Could not find post to upload image for"})
+    }
+
     uploadCoverImageStream(req, res)
 }
 

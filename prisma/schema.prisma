@@ -119,6 +119,7 @@ model User {
   emailVerified      DateTime?
   role               Role                   @default(USER)
   image              String?
+  createdAt          DateTime               @default(now())
   posts              Post[]
   accounts           Account[]
   sessions           Session[]
@@ -126,6 +127,18 @@ model User {
   likes              LikesOnPost[]
   commentsOnComments CommentOnPostComment[]
   comments           CommentOnPost[]
+  sentMessages       Message[]              @relation("sentMessages")
+  receivedMessages   Message[]              @relation("receivedMessages")
+}
+
+model Message {
+  id         String @id @default(cuid())
+  message    String
+  sender     User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  senderId   String
+  receiverId String
+  createdAt   DateTime @default(now())
 }
 
 enum Role {

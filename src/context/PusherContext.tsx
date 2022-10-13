@@ -6,7 +6,7 @@ const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
     cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
     channelAuthorization: {
         endpoint: "/api/pusher/auth",
-        transport:"ajax",
+        transport: "ajax",
     },
 })
 
@@ -17,6 +17,7 @@ const PusherContext = createContext<
 >(undefined)
 
 export default function PusherProvider({ children }: { children: ReactNode }) {
+
     return (
         <PusherContext.Provider value={{ pusher }}>
             {children}

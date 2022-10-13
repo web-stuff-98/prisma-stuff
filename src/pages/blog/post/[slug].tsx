@@ -11,6 +11,8 @@ import PostAuthor from "../../../components/post/PostAuthor";
 import { CommentOnPost, CommentOnPostComment } from "@prisma/client";
 import { useUsers } from "../../../context/UsersContext";
 import { has } from "lodash";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export default function Post({ post }: { post: any }) {
   const [resMsg, setResMsg] = useState<IResponseMessage>({ msg: '', err: false, pen: false })
@@ -22,14 +24,19 @@ export default function Post({ post }: { post: any }) {
       cacheProfileDataForUser(post.author.id)
   }, [])
 
+  const { push } = useRouter()
+  const { data:session } = useSession()
+
   return (
     <>
       {post && <div className="flex flex-col justify-center p-3 w-full">
         <div className="relative shadow-md h-60 w-full p-3 rounded overflow-hidden">
           <Image layout="fill" blurDataURL={post.blur} placeholder="blur" alt={post.title} objectPosition="absolute" objectFit="cover" src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${post.id}`} />
         </div>
-        <h1 className="text-4xl mx-auto mt-3">{post.title}</h1>
-        <h3 className="text-2xl mx-auto">{post.description}</h3>
+        {session && (session?.uid === post.author.id) && <div className="mx-auto flex gap-2 pt-2">
+          <button onClick={() => push(`/editor?postId=${post.id}`)} className="border-2 font-black border-black px-2 rounded flex dark:border-white items-center">Edit</button>
+        </div>}
+        <h1 className="text-3xl mx-auto text-center mt-3">{post.title}</h1>
         <div className="py-2 mx-auto">
           <PostAuthor authorData={findUserData(post.author.id)} post={post} />
         </div>

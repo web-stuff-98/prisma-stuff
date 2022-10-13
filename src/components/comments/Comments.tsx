@@ -109,7 +109,6 @@ export default function Comments({ inComments, postId }: { inComments: IComment[
                 method: "GET",
                 url: `/api/post/comment?commentThreadId=${commentThreadId}`,
             })
-            console.log(JSON.stringify(axres.data))
             setCommentThread(axres.data)
         } catch (e: AxiosError | any) {
             e.response ?
@@ -133,7 +132,7 @@ export default function Comments({ inComments, postId }: { inComments: IComment[
             {(commentThreadId ? commentThread : comments).map((comment: any) => <Comment key={comment.id} comment={comment} commentThreadId={commentThreadId} setCommentThreadId={setCommentThreadId} setCommentThreadAuthorId={setCommentThreadAuthorId} authorData={findUserData(comment.userId)} />)}
             {/* comment input */}
             {session && <form onSubmit={handleCommentForm} className="w-full flex h-20 items-center">
-                <input placeholder={commentThreadId ? "Reply to comment" : "Add comment"} value={commentInput} onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentInput(e.target.value)} type="text" className="w-full border-b border-black h-8 focus:outline-none" />
+                <input placeholder={commentThreadId ? "Reply to comment" : "Add comment"} value={commentInput} onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentInput(e.target.value)} type="text" className="w-full border-b border-black h-8 focus:outline-none bg-transparent dark:border-zinc-300" />
                 <button type="submit" className="cursor-pointer"><IoMdSend className="w-8 h-8" /></button>
             </form>}
         </div>

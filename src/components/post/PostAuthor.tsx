@@ -7,14 +7,19 @@ import { useState } from "react"
 import Image from "next/image"
 
 import axios from "axios"
-import { useRouter } from "next/router"
 import { IUser, useUsers } from "../../context/UsersContext"
+import { useUserDropdown } from "../../context/UserDropdownContext"
+import { useMouse } from "../../context/MouseContext"
+import { useRouter } from "next/router"
 
-export default function PostAuthor({ post, authorData }: { post: IPost, authorData: IUser }) {
+export default function PostAuthor({ post, authorData, includeLikesAndShares = true, reverse = false }: { post: IPost, authorData: IUser, includeLikesAndShares?: boolean, reverse?: boolean }) {
     const [clickedShared, setClickedShared] = useState(false)
     const [clickedLiked, setClickedLiked] = useState(false)
 
+    const { dispatch: userDropdownDispatch } = useUserDropdown()
     const { push } = useRouter()
+    const mousePos = useMouse()
+
 
     const share = async () => {
         setClickedShared(!clickedShared)
@@ -44,22 +49,32 @@ export default function PostAuthor({ post, authorData }: { post: IPost, authorDa
     const { data: session } = useSession()
 
     return (
-        <div className="flex gap-1 items-center">
+        <div className={`${reverse ? "flex flex-row-reverse" : "flex"} gap-1 items-center`}>
             {authorData && <>
-            <div className="flex flex-col text-xs items-center justify-center">
-                <div className="flex items-center">
-                    <AiOutlineShareAlt onClick={() => share()} style={{ strokeWidth: "2px" }} className="text-black w-4 h-4 drop-shadow cursor-pointer" />
-                    {post.shares.length + ((clickedShared && session) ? (post.shares.find((share: any) => share.userId === String(session?.uid)) ? -1 : 1) : 0)}
+                {includeLikesAndShares && <div className="flex flex-col text-xs items-center justify-center">
+                    <div className="flex items-center">
+                        <AiOutlineShareAlt onClick={() => share()} style={{ strokeWidth: "2px" }} className="text-black dark:text-white w-4 h-4 drop-shadow cursor-pointer" />
+                        {post.shares.length + ((clickedShared && session) ? (post.shares.find((share: any) => share.userId === String(session?.uid)) ? -1 : 1) : 0)}
+                    </div>
+                    <div className="flex items-center">
+                        <AiOutlineLike onClick={() => like()} style={{ strokeWidth: "2px" }} className="text-black dark:text-white w-4 h-4 drop-shadow cursor-pointer" />
+                        {post.likes.length + ((clickedLiked && session) ? (post.likes.find((like: any) => like.userId === String(session?.uid)) ? -1 : 1) : 0)}
+                    </div>
+                </div>}
+                <div onClick={() => {
+                    if (!session || authorData.id === session.uid) {
+                        push(`/profile/${authorData.id}`)
+                        return
+                    }
+                    userDropdownDispatch({
+                        showDropdown: true,
+                        subjectUserId: authorData.id,
+                        dropdownPos: mousePos
+                    })
+                }} className="bg-stone-500 cursor-pointer overflow-hidden shadow h-7 w-7 rounded-full relative">
+                    <Image layout="fill" src={authorData.image} />
                 </div>
-                <div className="flex items-center">
-                    <AiOutlineLike onClick={() => like()} style={{ strokeWidth: "2px" }} className="text-black w-4 h-4 drop-shadow cursor-pointer" />
-                    {post.likes.length + ((clickedLiked && session) ? (post.likes.find((like: any) => like.userId === String(session?.uid)) ? -1 : 1) : 0)}
-                </div>
-            </div>
-            <div onClick={() => push(`/profile/${post.author.id}`)} className="bg-stone-500 cursor-pointer overflow-hidden shadow h-7 w-7 rounded-full relative">
-                <Image layout="fill" src={authorData.image} />
-            </div>
-            <span className="text-xs text-gray-500">by {authorData.name}</span>
+                <span className="text-xs text-gray-500">by {authorData.name}</span>
             </>}
         </div>
     )
