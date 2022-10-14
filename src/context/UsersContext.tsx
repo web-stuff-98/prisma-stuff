@@ -5,7 +5,8 @@ import axios, { AxiosError } from "axios"
 export interface IUser {
     name: string,
     image: string,
-    id: string
+    id: string,
+    createdAt: Date
 }
 
 const UsersContext = createContext<
@@ -27,7 +28,7 @@ export default function UsersProvider({ children }: { children: ReactNode }) {
                 method: "GET",
                 url: `/api/user?uid=${uid}`,
             })
-            setUsers([...users, axres.data])
+            setUsers([...users, {...axres.data, createdAt: new Date(axres.data.createdAt)}])
         } catch (e: AxiosError | any) {
             console.error(e)
         }

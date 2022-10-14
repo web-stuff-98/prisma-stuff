@@ -9,9 +9,10 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs"
 import { AiOutlineClose } from "react-icons/ai"
 
 import Messenger from "../modal/Messenger"
-import { useModal } from "../../context/ModalContext"
+import { EModalType, useModal } from "../../context/ModalContext"
 import UserDropdown from "../userDropdown/UserDropdown"
 import { useUserDropdown } from "../../context/UserDropdownContext"
+import Settings from "../modal/Settings"
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { searchTags, autoAddRemoveSearchTag, maxPage, pageCount, fullCount } = useFilter()
@@ -30,14 +31,13 @@ export default function Layout({ children }: { children: ReactNode }) {
         push(`/blog/page/${Math.min(Number(query.page) + 1, maxPage)}${preserveQuery}`)
     }
 
-
     return (
-        <div className='w-full h-screen font-Kanit'>
+        <div className='w-full h-screen font-Archivo'>
             <div className="fixed top z-50 w-full shadow-lg">
                 <Header />
                 <Nav />
             </div>
-            <main className={"md:container mx-auto relative flex flex-col pt-20" + (pathname.includes("/blog/page/") ? " pb-12" : "")}>
+            <main className={"md:container mx-auto relative flex flex-col pt-20 " + (pathname.includes("/blog/page/") ? " pb-12" : "")}>
                 {searchTags.length > 0 && pathname.includes("/blog/page/") && <div className="flex gap-3 p-6 pb-0 mx-auto">
                     {searchTags.map((tag: string) => <div onClick={() => autoAddRemoveSearchTag(tag)} className="border cursor-pointer bg-stone-800 px-2 rounded border-black dark:bg-zinc-800 dark:border-zinc-500 dark:hover:bg-zinc-700 text-white shadow flex items-center shadow-md">{tag}</div>)}
                 </div>}
@@ -53,7 +53,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                             <AiOutlineClose className="w-6 h-6 text-black dark:text-white" />
                         </div>
                     </div>
-                    <Messenger />
+                    {{
+                        [EModalType.Messages]:<Messenger/>,
+                        [EModalType.Settings]:<Settings/>
+                    }[mState.modalType]}
                 </div>
             </div>}
             {pathname.includes("/blog/page") && <div style={{ bottom: "0" }} className="fixed flex items-center justify-center bg-neutral-900 dark:sm:bg-zinc-900 border-t border-black dark:border-zinc-800 w-screen h-14">

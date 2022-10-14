@@ -22,7 +22,7 @@ model Post {
   published    Boolean         @default(false)
   imagePending Boolean         @default(true) @map("image_pending")
   createdAt    DateTime        @default(now())
-  author       User            @relation(fields: [authorId], references: [id])
+  author       User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId     String
   blur         String?
   tags         Tag[]
@@ -41,9 +41,9 @@ model Tag {
 
 model SharesOnPost {
   id     Int    @id @default(autoincrement())
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String
-  User   User   @relation(fields: [userId], references: [id])
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   @@index([userId])
@@ -51,9 +51,9 @@ model SharesOnPost {
 
 model LikesOnPost {
   id     Int    @id @default(autoincrement())
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String
-  User   User   @relation(fields: [userId], references: [id])
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   @@index([userId])
@@ -62,9 +62,9 @@ model LikesOnPost {
 model CommentOnPost {
   id                   String                 @id @default(cuid())
   comment              String
-  Post                 Post                   @relation(fields: [postId], references: [id])
+  Post                 Post                   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId               String
-  User                 User                   @relation(fields: [userId], references: [id])
+  User                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String
   createdAt            DateTime               @default(now())
   CommentOnPostComment CommentOnPostComment[]
@@ -73,10 +73,10 @@ model CommentOnPost {
 model CommentOnPostComment {
   id            String        @id @default(cuid())
   comment       String
-  commentedOn   CommentOnPost @relation(fields: [commentedOnId], references: [id])
+  commentedOn   CommentOnPost @relation(fields: [commentedOnId], references: [id], onDelete: Cascade)
   commentedOnId String
   createdAt     DateTime      @default(now())
-  user          User          @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
 
   @@index([id])
@@ -134,8 +134,8 @@ model User {
 model Message {
   id         String @id @default(cuid())
   message    String
-  sender     User   @relation(name: "sentMessages", fields: [senderId], references: [id])
-  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  sender     User   @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
   senderId   String
   receiverId String
   createdAt   DateTime @default(now())

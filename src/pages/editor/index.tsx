@@ -99,7 +99,7 @@ const Editor = ({ post }: { post: any }) => {
 
     const hiddenFileInputRef = useRef<HTMLInputElement>(null)
     return (
-        <form className='container p-1 mx-auto gap-2 flex flex-col' onSubmit={formik.handleSubmit}>
+        <form className='container p-1 pt-4 mx-auto gap-2 flex flex-col' onSubmit={formik.handleSubmit}>
             <label className='mx-auto mt-1' htmlFor='title'>Title</label>
             <input
                 className='p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm'
@@ -147,9 +147,9 @@ const Editor = ({ post }: { post: any }) => {
             {resMsg.msg && resMsg.msg}
             {resMsg.pen && <ProgressBar percent={progress} />}
             <input onChange={handleFileInput} type="file" ref={hiddenFileInputRef} style={{ display: "none" }} accept=".jpg,.jpeg,.png" />
-            <button type="submit" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Submit</button>
-            <button onClick={() => hiddenFileInputRef.current?.click()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Select image</button>
-            <button onClick={() => getRandomImage()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded border'>Random image</button>
+            <button type="submit" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded-sm border'>Submit</button>
+            <button onClick={() => hiddenFileInputRef.current?.click()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded-sm border'>Select image</button>
+            <button onClick={() => getRandomImage()} type="button" className='bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded-sm border'>Random image</button>
             {base64coverImage && <div className='relative rounded mx-auto w-96 h-48'>
                 <Image src={base64coverImage} objectPosition="absolute" objectFit="contain" className="m-1 shadow-lg rounded" layout="fill" />
             </div>}

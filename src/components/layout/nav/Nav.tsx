@@ -7,6 +7,8 @@ import { BiSearch } from "react-icons/bi"
 import { IoChatboxSharp } from "react-icons/io5"
 import { CgDarkMode, CgProfile } from "react-icons/cg"
 import { AiOutlineMenu } from "react-icons/ai"
+import { FiSettings } from "react-icons/fi"
+
 import { useModal } from "../../../context/ModalContext"
 
 import { EModalType } from "../../../context/ModalContext"
@@ -14,7 +16,7 @@ import { EModalType } from "../../../context/ModalContext"
 export default function Nav() {
     const { data: session, status } = useSession()
 
-    const { dispatch:mDispatch } = useModal()
+    const { dispatch: mDispatch } = useModal()
 
     const [searchOpen, setSearchOpen] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -27,8 +29,9 @@ export default function Nav() {
     const darkModeRef = useRef<HTMLDivElement>(null)
     const profileRef = useRef<HTMLDivElement>(null)
     const chatRef = useRef<HTMLDivElement>(null)
+    const settingsRef = useRef<HTMLDivElement>(null)
     return (
-        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear" }} className="font-black px-1 h-6 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-zinc-900 md:bg-white dark:md:bg-zinc-900 dark:md:border-b dark:sm:border-b dark:border-zinc-800 h-full">
+        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear" }} className="font-black px-1 h-6 md:px-2 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-zinc-900 md:bg-white dark:md:bg-zinc-900 dark:md:border-b dark:sm:border-b dark:border-zinc-800 h-full">
             <div ref={navInnerRef} className="flex justify-between items-center h-full w-full md:container mx-auto my-auto ">
                 <div className={mobileMenuOpen ? "flex flex-col gap-6 items-start" : "flex items-center"}>
                     {/* Navlinks / Hamburger Icon */}
@@ -50,6 +53,7 @@ export default function Nav() {
                             menuIconRef.current?.classList.toggle('mb-4')
                             searchRef.current?.classList.toggle('sm:hidden')
                             darkModeRef.current?.classList.toggle('sm:hidden')
+                            settingsRef.current?.classList.toggle('sm:hidden')
                             chatRef.current?.classList.toggle('sm:hidden')
                             if (profileRef.current)
                                 profileRef.current?.classList.toggle('sm:hidden')
@@ -66,8 +70,12 @@ export default function Nav() {
                             <CgProfile className="text-white w-5 h-full p-0.5 drop-shadow-md" />
                         </div>
                     </Link>}
-                    <div ref={chatRef} onClick={() => mDispatch({showModal:true, modalType:EModalType.Messages})} className="flex justify-center items-center bg-amber-700 rounded cursor-pointer">
-                        <IoChatboxSharp className="text-white w-5 h-full p-0.5 drop-shadow-md"/>
+                    {session &&
+                        <div onClick={() => mDispatch({showModal:true, modalType:EModalType.Settings})} ref={settingsRef} className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer">
+                            <FiSettings className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+                        </div>}
+                    <div ref={chatRef} onClick={() => mDispatch({ showModal: true, modalType: EModalType.Messages })} className="flex justify-center items-center bg-amber-700 rounded cursor-pointer">
+                        <IoChatboxSharp className="text-white w-5 h-full p-0.5 drop-shadow-md" />
                     </div>
                     <div ref={searchRef} onClick={() => { if (!searchOpen) { setSearchOpen(true) } }} className={"bg-amber-700 sm:flex flex items-center cursor-pointer rounded " + (searchOpen && " pr-2")}>
                         <BiSearch onClick={() => { if (searchOpen) { setSearchOpen(false) } }} className="text-white drop-shadow-md w-5 cursor-pointer h-full p-0.5" />

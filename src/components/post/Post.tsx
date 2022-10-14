@@ -21,21 +21,20 @@ export default function Post({ post, reverse }: { post: IPost, reverse:boolean }
     const { autoAddRemoveSearchTag } = useFilter()
 
     return (
-        <article className={`p-2 text-center gap-1 sm:flex-col md:flex md:flex-row${reverse ? "-reverse" : ""} h-full w-full justify-evenly`}>
-            {/*Image*/}
+        <article className={`p-2 text-center gap-1 sm:flex-col md:flex ${reverse ? "md:flex-row-reverse" : "md:flex-row"} h-full w-full justify-evenly`}>
             <Link href={`/blog/post/${post.slug}`}>
-                <div className="relative border border-zinc-700 grow shadow-xl cursor-pointer sm:w-full md:w-64 h-56 bg-gray-200 shadow rounded overflow-hidden shadow">
+                <div className="relative border border-zinc-700 shadow-xl cursor-pointer sm:w-full sm:h-28 md:w-64 md:min-w-postWidth md:h-postHeight bg-gray-200 shadow rounded overflow-hidden shadow">
                     <Image layout="fill" objectFit="cover" objectPosition="absolute" src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${post.id}`} />
                 </div>
             </Link>
-            <div style={{maxWidth:"66.66%"}} className={`flex flex-col justify-center items-${reverse ? "end" : "start"} mx-auto p-1`}>
-                <h3 style={{ lineHeight: "1" }} className={`text-2xl sm:text-center md:text-${reverse ? "right" : "left"} font-black pb-1`}>{post.title}</h3>
-                <p style={{ lineHeight: "1" }} className={`text-sm sm:text-center md:text-${reverse ? "right" : "left"}`}>{post.description}</p>
-                <div style={{ filter: "drop-shadow(0px 1.5px 1px rgba(0,0,0,0.5))" }} className={`flex py-2 flex-wrap sm:justify-center md:justify-${reverse ? "end" : "start"} items-start w-full gap-1`}>
-                    {post.tags.map((tag: string) => <div onClick={() => autoAddRemoveSearchTag(tag)} className="text-xs rounded cursor-pointer bg-gray-900 text-white hover:bg-gray-600 py-0.5 px-1 dark:bg-amber-700 dark:border-zinc-200 dark:border">{tag}</div>)}
+            <div className={`flex flex-col justify-center items-${reverse ? "end" : "start"} mx-auto grow p-1`}>
+                <h3 style={{ lineHeight: "1" }} className={`text-lg font-ArchivoBlack sm:font-Archivo sm:text-sm md:text-lg sm:mx-auto sm:text-center ${reverse ? "md:text-right" : "md:text-left"} font-black md:pb-1`}>{post.title}</h3>
+                <p style={{ lineHeight: "1" }} className={`text-sm sm:text-center sm:text-xs ${reverse ? "md:text-right" : "md:text-left"}`}>{post.description}</p>
+                <div style={{ filter: "drop-shadow(0px 1.5px 1px rgba(0,0,0,0.5))" }} className={`flex py-1 flex-wrap sm:justify-center ${reverse ? "md:justify-end" : "md:justify-start"} items-start w-full gap-0.5`}>
+                    {post.tags.map((tag: string) => <div onClick={() => autoAddRemoveSearchTag(tag)} className="text-xs rounded cursor-pointer bg-gray-900 text-white hover:bg-gray-600 py-0.5 px-1 sm:py-0 dark:bg-amber-700 dark:border-zinc-200 dark:border">{tag}</div>)}
                 </div>
-                <div className="sm:mx-auto md:mx-0">
-                <PostAuthor key={post.id} reverse={reverse} authorData={findUserData(post.author.id)} post={post} />
+                <div className="sm:mx-auto mt-1 md:mx-0">
+                    <PostAuthor key={post.id} reverse={reverse} authorData={findUserData(post.author.id)} post={post} />
                 </div>
             </div>
         </article>

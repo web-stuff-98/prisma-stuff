@@ -11,7 +11,8 @@ export default async function User(req: NextApiRequest, res: NextApiResponse) {
                 select: {
                     id: true,
                     name: true,
-                    image: true
+                    image: true,
+                    createdAt:true
                 }
             })
             return res.status(200).json(q)

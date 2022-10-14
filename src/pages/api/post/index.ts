@@ -15,11 +15,13 @@ cloudinary.v2.config({
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     const { title, content, description, tags:rawTags, base64coverImage } = req.body
-    const tags = rawTags.split("#").filter((tag:string) => tag !== "").map((tag:string) => ({name: tag.trim().toLocaleLowerCase()}))
+    let tags
+    if(req.method !== "DELETE")
+        tags = rawTags.split("#").filter((tag:string) => tag !== "").map((tag:string) => ({name: tag.trim().toLocaleLowerCase()}))
 
     const session = await getSession({req})
     if(!session) return res.status(401).end()
-    if(req.method !== "POST" && req.method !== "PATCH") return res.status(405)
+    if(req.method !== "POST" && req.method !== "PATCH" && req.method !== "DELETE") return res.status(405).end()
 
     if(req.method === "POST") {
         try {
@@ -64,12 +66,40 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     content,
                     description:description.trim(),
                     published:true,
-                    ...(req.body.withImage ? {imagePending:true} : {})
+                    ...(req.body.withImage ? {imagePending:true} : {}),
+                    tags: {
+                        create: tags
+                    }
                 }
             })
             return res.status(200).end()
         } catch(e) {
             return res.status(500).json({msg: "Internal error"})
+        }
+    }
+    if(req.method === "DELETE") {
+        const { id:_id } = req.query
+        const id = String(_id)
+        console.log(id)
+        try {
+            const q = await prisma.post.findUniqueOrThrow({ where: { id }, select: { id:true, authorId:true } })
+            if(q.authorId !== session.uid)
+                return res.status(403).json({msg:"Unauthorized"})
+            await prisma.post.delete({ where: { id } })
+            try {
+                await new Promise((resolve, reject) => {
+                    cloudinary.v2.uploader.destroy(`prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${id}`)
+                        .then((res) => resolve(res))
+                        .catch((e) => reject(e))
+                })
+                return res.status(200).end()
+            } catch (e) {
+                console.error(`Failed to delete post image : ${e}`)
+                return res.status(200).end()
+            }
+        } catch (e) {
+            console.error(e)
+            return res.status(400).json({msg:"Post does not exist"})
         }
     }
 }

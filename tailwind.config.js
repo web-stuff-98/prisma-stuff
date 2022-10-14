@@ -9,18 +9,24 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: '400px',
-      md: '550px',
-      lg: '650px',
-      xl: '860px'
+      sm: '2px',
+      md: '700px',
+      lg: '780px',
+      xl: '1024px'
     },  
     extend: {
       fontFamily: {
-        Inter: ["Inter Tight", ...defaultTheme.fontFamily.sans],
-        Kanit: ["Kanit", ...defaultTheme.fontFamily.sans]
+        Archivo: ["Archivo", ...defaultTheme.fontFamily.sans],
+        ArchivoBlack: ["Archivo Black", ...defaultTheme.fontFamily.sans]
       },
       colors: {
-        background: "rgb(21,21,24)"
+        darkBackground: "rgb(21,21,24)"
+      },
+      height: {
+        postHeight: "13.666em"
+      },
+      minWidth: {
+        postWidth: "16em"
       }
     },
   },

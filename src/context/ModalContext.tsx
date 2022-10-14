@@ -1,7 +1,8 @@
 import { useContext, createContext, useReducer, ReactNode } from "react";
 
 export enum EModalType {
-    "Messages"
+    "Messages",
+    "Settings"
 }
 
 const initialState = {
@@ -22,8 +23,8 @@ const ModalContext = createContext<
     {
         state: State,
         dispatch: Dispatch
-    } | any
->(undefined)
+    }
+>({state: initialState, dispatch: () => {}})
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(modalReducer, initialState)

@@ -14,6 +14,7 @@ export default function UserDropdown() {
             <button onClick={() => {
                 setSubject(state.subjectUserId)
                 mDispatch({ showModal: true, modalType: EModalType.Messages })
+                dispatch({ showDropdown: false })
             }}
                 type="button" className="text-xs cursor-pointer">Direct message</button>
             <button onClick={() => {
