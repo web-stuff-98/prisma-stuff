@@ -74,7 +74,8 @@ export default function Post({
         >
           {post.tags.map((tag: string) => (
             <div
-              onClick={() => autoAddRemoveSearchTag(tag)}
+              onClick={() => autoAddRemoveSearchTag(tag.trim())}
+              key={tag}
               className="text-xs rounded cursor-pointer bg-gray-900 hover:bg-gray-800 text-white hover:bg-gray-600 py-0.5 px-1 sm:py-0 dark:bg-amber-700 dark:hover:bg-amber-600 dark:border-zinc-200 dark:border"
             >
               {tag}

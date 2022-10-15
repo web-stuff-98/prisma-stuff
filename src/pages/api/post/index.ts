@@ -29,11 +29,14 @@ export default async function handler(
   if (req.method !== "DELETE")
     tags = rawTags
       .split("#")
-      .filter((tag: string) => tag !== "")
-      .map((tag: string) => () => ({
-        where: { name: tag },
-        create: { name: tag },
-      }));
+      .filter((tag: string) => tag.trim() !== "")
+      .map((inTag: string) => {
+        const tag = inTag.trim().toLowerCase();
+        return {
+          where: { name: tag },
+          create: { name: tag },
+        };
+      });
 
   const session = await getSession({ req });
   if (!session) return res.status(401).end();

@@ -75,8 +75,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               {searchTags.map((tag: string) => (
                 <div
                   key={tag}
-                  onClick={() => autoAddRemoveSearchTag(tag)}
-                  className="border text-xs font-bold cursor-pointer bg-indigo-800 px-2 rounded border-black dark:border-zinc-500 flex-wrap dark:hover:bg-indigo-600 text-white shadow flex items-center shadow-md"
+                  onClick={() => autoAddRemoveSearchTag(tag.trim())}
+                  className="border text-xs font-bold cursor-pointer bg-indigo-800 px-2 rounded border-black dark:border-zinc-500 dark:hover:bg-indigo-600 text-white shadow flex items-center shadow-md"
                 >
                   {tag}
                 </div>

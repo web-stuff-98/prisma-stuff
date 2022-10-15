@@ -85,7 +85,7 @@ export default function Messenger() {
     <div className="w-full h-full flex flex-col">
       {subject ? (
         <>
-          <div className="flex h-40 py-0.5 flex-col grow w-full overflow-y-auto">
+          <div className="flex h-40 py-0.5 mt-0.5 flex-col grow w-full overflow-y-auto">
             {messages &&
               messages
                 .filter(

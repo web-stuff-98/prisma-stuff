@@ -22,9 +22,8 @@ export default function Nav() {
   const { dispatch: mDispatch } = useModal()
   const { darkMode, setDarkMode } = useDarkMode()
   const { notifications } = useMessenger()
-  const { searchTerm, setSearchTerm } = useFilter()
+  const { searchTerm, setSearchTerm, searchOpen, setSearchOpen } = useFilter()
 
-  const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navlinksRef = useRef<HTMLDivElement>(null)

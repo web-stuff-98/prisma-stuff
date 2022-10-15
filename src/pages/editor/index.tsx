@@ -58,7 +58,7 @@ const Editor = ({ post }: { post: any }) => {
           method: postEditingId ? 'PATCH' : 'POST',
           data:
             postEditingId && base64coverImage
-              ? { ...values, withImage: true, base64coverImage }
+              ? { ...values, base64coverImage, withImage: true }
               : { ...values, base64coverImage },
         })
         if (base64coverImage) {

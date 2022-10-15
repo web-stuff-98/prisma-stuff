@@ -86,7 +86,7 @@ const Page = ({
             </h2>
             {popular &&
               popular.map((post: IPost) => (
-                <Link href={`/blog/post/${post.slug}`}>
+                <Link key={post.id} href={`/blog/post/${post.slug}`}>
                   <article
                     style={{ lineHeight: '1' }}
                     className="text-xs p-1 dark:hover:bg-zinc-800 hover:bg-gray-100 mx-1 rounded cursor-pointer flex flex-col"
@@ -116,6 +116,43 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.error(`Could not connect to redis : ${e}`)
   }
 
+  // popular posts
+  let popular
+  const cachedPopularPosts = await redisClient?.get('popular')
+  if (cachedPopularPosts) {
+    popular = JSON.parse(cachedPopularPosts)
+  } else {
+    popular = JSON.parse(JSON.stringify({
+      popular: await prisma.post.findMany({
+        where: {
+          published: true,
+          imagePending: false,
+        },
+        select: {
+          title: true,
+          description: true,
+          likes: true,
+          shares: true,
+          id: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          slug: true,
+        },
+        orderBy: {
+          likes: {
+            _count: 'desc',
+          },
+        },
+      }),
+    }))
+    const expiration: number = process.env.NODE_ENV === 'development' ? 5 : 120
+    await redisClient?.setEx('popular', expiration, JSON.stringify(popular))
+  }
+
   /* The users parsed query parameters. Stored as keyname on redis so cached props can be looked up */
   const { tags: rawTags } = query
   const { term: rawTerm } = query
@@ -124,9 +161,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         tags: rawTags
           ? String(rawTags)
               .toLowerCase()
-              .split(" ")
-              .filter((tag: string) => tag.trim() !== "")
-              .map((tag: string) => tag.replace(/[^\w-]+/g, ""))
+              .split(' ')
+              .filter((tag: string) => tag.trim() !== '')
+              .map((tag: string) => tag.replace(/[^\w-]+/g, ''))
           : [],
         pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
       }
@@ -135,27 +172,27 @@ export const getServerSideProps: GetServerSideProps = async ({
         term: String(rawTerm)
           .toLowerCase()
           .trim()
-          .replaceAll("+", " ")
-          .replace(/[^\w-]+/g, ""),
+          .replaceAll('+', ' ')
+          .replace(/[^\w-]+/g, ''),
       }
     : {}
   const cachedProps = await redisClient?.get(JSON.stringify(clientQueryInput))
   if (cachedProps) {
     await redisClient?.disconnect()
     return {
-      props: JSON.parse(cachedProps),
+      props: {...JSON.parse(cachedProps), ...popular},
     }
   }
 
   //:any because using mode:'sensitive' causes a typescript error for some reason
-  const where:any = rawTags
+  const where: any = rawTags
     ? { tags: { some: { name: { in: clientQueryInput.tags } } } }
     : {
         ...(clientQueryInput.term
           ? {
               title: {
                 contains: clientQueryInput.term,
-                mode: 'insensitive'
+                mode: 'insensitive',
               },
             }
           : {}),
@@ -207,7 +244,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     where: {
       published: true,
       imagePending: false,
-      ...where
+      ...where,
     },
     select: { id: true },
   })
@@ -215,44 +252,22 @@ export const getServerSideProps: GetServerSideProps = async ({
     ...data,
     tags: data.tags.map((tag: any) => tag.name),
   }))
-  // popular posts
-  const popular = await prisma.post.findMany({
-    where: {
-      published: true,
-      imagePending: false,
-    },
-    select: {
-      title: true,
-      description: true,
-      likes: true,
-      shares: true,
-      id: true,
-      author: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      slug: true,
-    },
-    orderBy: {
-      likes: {
-        _count: 'desc',
-      },
-    },
-  })
 
   const props = {
     feed: JSON.parse(JSON.stringify(feed)),
-    popular,
     pageCount: feedQ.length,
     fullCount: feedQ_count.length,
     maxPage: Math.ceil(feedQ_count.length / 20),
+    ...popular
   }
 
   const key = JSON.stringify(clientQueryInput)
   const expiration: number = process.env.NODE_ENV === 'development' ? 5 : 120
-  await redisClient?.setEx(key, expiration, JSON.stringify(props))
+  await redisClient?.setEx(
+    key,
+    expiration,
+    JSON.stringify({ ...props, ...popular }),
+  )
 
   await redisClient?.disconnect()
 
