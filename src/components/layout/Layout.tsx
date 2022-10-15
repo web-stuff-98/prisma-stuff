@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="w-full h-screen font-Archivo">
       <div className="w-full h-full">
-        <div className="fixed top z-50 w-full shadow dark:shadow-none">
+        <div className="fixed top z-50 w-full dark:shadow-none">
           <Header />
           <Nav />
         </div>
@@ -98,7 +98,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             className="z-50 flex justify-center items-center w-screen h-screen fixed"
           >
             {/* Modal container */}
-            <div className="flex flex-col h-80 w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-neutral-900 border border-black dark:border-zinc-700 absolute">
+            <div style={{maxWidth:"90%"}} className="flex flex-col w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-neutral-900 border border-black dark:border-zinc-700 absolute">
               <div className="w-full md:container bg-zinc-100 dark:bg-neutral-800 dark:outline-zinc-700 outline items-center outline-1 flex justify-end">
                 <div className="grow px-1 font-bold text-xs">
                   {subject ? (
@@ -132,7 +132,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         {pathname.includes('/blog/page') && (
           <div
             style={{ bottom: '0' }}
-            className="fixed flex items-center justify-center bg-neutral-900 dark:bg-neutral-900 border-t border-black dark:border-zinc-800 w-screen h-14"
+            className="fixed flex items-center justify-center bg-neutral-900 dark:bg-zinc-900 border-t border-black dark:border-zinc-800 w-screen h-14"
           >
             <BsChevronLeft
               onClick={() => prevPage()}

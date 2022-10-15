@@ -14,7 +14,7 @@ import { useSession } from 'next-auth/react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 export default function Messenger() {
-  const { subject, setSubject, messages } = useMessenger()
+  const { subject, setSubject, messages, addMessage } = useMessenger()
   const { findUserData } = useUsers()
   const { data: session } = useSession()
 
@@ -70,6 +70,7 @@ export default function Messenger() {
         url: '/api/pusher/message',
         data: { message, uid: subject },
       })
+      addMessage(message)
     } catch (e:AxiosError | any) {
       e.response
         ? //@ts-ignore-error
@@ -84,7 +85,7 @@ export default function Messenger() {
     <div className="w-full h-full flex flex-col">
       {subject ? (
         <>
-          <div className="flex py-0.5 flex-col grow w-full overflow-y-auto">
+          <div className="flex h-40 py-0.5 flex-col grow w-full overflow-y-auto">
             {messages &&
               messages
                 .filter(
@@ -102,21 +103,27 @@ export default function Messenger() {
                         style={{ minWidth: '1.5rem', minHeight: '1.5rem' }}
                         className="relative bg-stone-200 border overflow-hidden border-stone-300 rounded"
                       >
-                        <Image
-                          layout="fill"
-                          objectFit="cover"
-                          objectPosition="absolute"
-                          src={findUserData(msg.senderId).image}
-                        />
+                        {findUserData(msg.senderId) && (
+                          <Image
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="absolute"
+                            src={findUserData(msg.senderId).image}
+                          />
+                        )}
                       </div>
                       <div className="flex flex-col items-start text-xs justify-center">
-                        <div style={{ lineHeight: '0.866', fontSize: '0.7rem' }}>
+                        <div
+                          style={{ lineHeight: '0.866', fontSize: '0.7rem' }}
+                        >
                           {msg.createdAt.getDay()}/{msg.createdAt.getMonth()}/
                           {`${msg.createdAt.getFullYear()}`.slice(2, 4)}
                         </div>
-                        <div style={{ lineHeight: '0.866', fontSize: '0.66rem' }}>
-                          {msg.createdAt.getHours()}:
-                          {msg.createdAt.getMinutes()}
+                        <div
+                          style={{ lineHeight: '0.866', fontSize: '0.66rem' }}
+                        >
+                          {('0' + msg.createdAt.getHours()).slice(-2)}:
+                          {('0' + msg.createdAt.getMinutes()).slice(-2)}
                         </div>
                       </div>
                     </div>

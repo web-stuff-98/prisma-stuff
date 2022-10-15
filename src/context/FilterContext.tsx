@@ -9,6 +9,8 @@ should have put this stuff in a reducer
 const FilterContext = createContext<
   | {
       searchTags: string[]
+      searchTerm: string
+      setSearchTerm: (to: string) => void
       autoAddRemoveSearchTag: (tag: string) => void
       pageCount: number
       fullCount: number
@@ -25,6 +27,17 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
   const [pageCount, setPageCount] = useState(0)
   const [fullCount, setFullCount] = useState(0)
   const [maxPage, setMaxPage] = useState(1)
+  const [searchTerm, setSearchTermState] = useState('')
+
+  const setSearchTerm = (to: string) => {
+    setSearchTermState(to)
+    if (to.trim() !== '') {
+      setSearchTags([])
+      push(`/blog/page/1?term=${to.replaceAll(' ', '+').trim().replace(/[^\w-]+/g, '')}`)
+    } else {
+      push("/blog/page/1")
+    }
+  }
 
   const { push, query } = useRouter()
   const autoAddRemoveSearchTag = (tag: string) => {
@@ -36,7 +49,8 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
         .split('+')
         .filter((tag: string) => tag !== '')
     if (tags.includes(tag)) tags = tags.filter((t: string) => t !== tag)
-    else tags = [...tags, tag]
+    //sort tags alphabetically using localeCompare so that redundant query-props key value pairs are stored on redis
+    else tags = [...tags, tag].sort((a:string, b:string) => a.localeCompare(b))
     setSearchTags(tags)
     push(`/blog/page/1${tags.length > 0 ? `?tags=` + tags.join('+') : ''}`)
   }
@@ -52,6 +66,8 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
         pageCount,
         maxPage,
         setMaxPage,
+        searchTerm,
+        setSearchTerm,
       }}
     >
       {children}

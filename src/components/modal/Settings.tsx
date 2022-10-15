@@ -64,9 +64,9 @@ export default function Settings() {
                 Double click to delete your account
             <button
                   type="button"
-                  className="py-2 w-20 text-md w-full bg-rose-900 dark:border-zinc-300 shadow rounded-sm border"
+                  className="py-2 w-20 text-md w-full text-white bg-rose-900 dark:border-zinc-300 shadow rounded-lg border"
                 >
-                  Delete account
+                  DELETE
                 </button>
             </div>
           </div>

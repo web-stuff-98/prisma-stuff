@@ -5,6 +5,7 @@ import { usePusher } from './PusherContext'
 import { useSession } from 'next-auth/react'
 import axios, { AxiosError } from 'axios'
 import { useUsers } from './UsersContext'
+import { EModalType, useModal } from './ModalContext'
 
 export interface IMessage {
   message: string
@@ -22,11 +23,13 @@ const MessengerContext = createContext<
       messengerHeading: string
       notifications: number
       setNotifications: (to: number) => void
+      addMessage: (msg:string) => void
     }
   | any
 >(undefined)
 
 export const MessengerProvider = ({ children }: { children: ReactNode }) => {
+  const { state: mState } = useModal()
   const [messages, setMessages] = useState<IMessage[]>([])
   const [notifications, setNotifications] = useState(0)
   const [subject, setSubjectState] = useState('')
@@ -37,11 +40,16 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
     axios({
       method: 'POST',
       url: `/api/pusher/message?readByUserId=${to}`,
-    }).catch((e) => {
-      console.error(e)
-    }).then(() => {
-      setNotifications(messages.length - messages.filter((msg:any) => msg.senderId === to).length)
     })
+      .catch((e) => {
+        console.error(e)
+      })
+      .then(() => {
+        setNotifications(
+          messages.length -
+            messages.filter((msg: any) => msg.senderId === to).length,
+        )
+      })
   }
 
   const { pusher } = usePusher()
@@ -54,10 +62,14 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
         method: 'GET',
         url: '/api/pusher/message',
       })
-      const data = axres.data.map((msg: any) => ({
-        ...msg,
-        createdAt: new Date(msg.createdAt),
-      }))
+      const data = axres.data
+        .sort((a: any, b: any) => {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        })
+        .map((msg: any) => ({
+          ...msg,
+          createdAt: new Date(msg.createdAt),
+        }))
       setMessages(data)
       let uids: string[] = []
       axres.data.forEach((msg: any) => {
@@ -68,6 +80,20 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       console.error(e)
     }
   }
+  const addMessage = (msg:string) => {
+    console.log(msg)
+    setMessages(old => {
+      let newMsgs = old
+      newMsgs.push({
+        senderId:String(session?.uid),
+        message: msg,
+        createdAt: new Date(),
+        receiverRead:true,
+        id: msg+`${Date.now()}`
+      })
+      return newMsgs
+    })
+  }
 
   useEffect(() => {
     if (!pusher) return
@@ -76,16 +102,17 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       const channel = pusher.subscribe(`inbox=${session.uid}`)
       channel.bind('message-added', (data: any) => {
         setMessages((old) => {
-          return [
-            ...old,
-            {
-              ...data,
-              createdAt: new Date(data.createdAt),
-            },
-          ]
+          let newMsgs = old
+          newMsgs.push({...data, createdAt: new Date(data.createdAt)})
+          return newMsgs
         })
-        if(subject && subject === data.senderId) {
-          setNotifications(notifications+1)
+        if (
+          !mState.showModal ||
+          mState.modalType !== EModalType.Messages ||
+          !subject ||
+          subject !== data.senderId
+        ) {
+          setNotifications((old) => old + 1)
         }
         cacheProfileDataForUser(data.senderId)
       })
@@ -102,6 +129,7 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
         messengerHeading,
         notifications,
         setNotifications,
+        addMessage
       }}
     >
       {children}

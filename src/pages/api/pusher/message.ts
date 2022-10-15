@@ -34,7 +34,7 @@ export default async function handler(
       }
       await pusher.trigger(`inbox=${uid}`, "message-added", {
         message,
-        uid: session.uid,
+        senderId: session.uid,
         createdAt: new Date().toISOString(),
       });
       await prisma.user.update({
