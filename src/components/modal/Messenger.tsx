@@ -158,8 +158,9 @@ export default function Messenger() {
               )
             ) : (
               <div className="p-4 text-center my-auto text-md font-bold">
-                You haven&apos;t started any conversations or received any
-                messages. Click on a user to send a message.
+                You either haven&apos;t started any conversations or received
+                any messages, or the user you were in a conversation with
+                deleted their account. Click on a user to send a message.
               </div>
             )}
           </div>

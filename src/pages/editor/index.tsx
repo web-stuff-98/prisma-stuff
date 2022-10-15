@@ -12,6 +12,8 @@ import prisma from '../../lib/prisma'
 import { useRouter } from 'next/router'
 import ProgressBar from '../../components/progressBar/ProgressBar'
 
+import has from "lodash/has"
+
 const Editor = ({ post }: { post: any }) => {
   const [resMsg, setResMsg] = useState<IResponseMessage>({
     msg: '',
