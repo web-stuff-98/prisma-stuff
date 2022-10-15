@@ -133,6 +133,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
   const cachedProps = await redisClient?.get(JSON.stringify(clientQueryInput))
   if (cachedProps) {
+    await redisClient?.disconnect()
     return {
       props: JSON.parse(cachedProps),
     }
@@ -235,6 +236,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     JSON.stringify(clientQueryInput),
     JSON.stringify(props),
   )
+
+  await redisClient?.disconnect()
 
   return { props }
 }
