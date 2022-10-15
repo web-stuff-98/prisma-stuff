@@ -13,11 +13,13 @@ import { useModal } from "../../context/ModalContext"
 
 import { EModalType } from "../../context/ModalContext"
 import { useDarkMode } from "../../pages/_app"
+import { useMessenger } from "../../context/MessengerContext"
 
 export default function Nav() {
     const { data: session, status } = useSession()
     const { dispatch: mDispatch } = useModal()
     const { darkMode, setDarkMode } = useDarkMode()
+    const { notifications } = useMessenger()
 
     const [searchOpen, setSearchOpen] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -75,8 +77,12 @@ export default function Nav() {
                         <div onClick={() => mDispatch({showModal:true, modalType:EModalType.Settings})} ref={settingsRef} className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer">
                             <FiSettings className="text-white w-5 h-full p-0.5 drop-shadow-md" />
                         </div>}
-                    <div ref={chatRef} onClick={() => mDispatch({ showModal: true, modalType: EModalType.Messages })} className="flex justify-center items-center bg-amber-700 rounded cursor-pointer">
+                    <div ref={chatRef} onClick={() => mDispatch({ showModal: true, modalType: EModalType.Messages })} className="flex justify-center items-center bg-amber-700 rounded cursor-pointer relative">
                         <IoChatboxSharp className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+                        {/* notifications */}
+                        <div style={{bottom:"-20%", right:"-20%"}} className="text-lime-500 drop-shadow absolute z-50 font-bold">
+                            +{notifications}
+                        </div>
                     </div>
                     <div ref={searchRef} onClick={() => { if (!searchOpen) { setSearchOpen(true) } }} className={"bg-amber-700 sm:flex flex items-center cursor-pointer rounded " + (searchOpen && " pr-2")}>
                         <BiSearch onClick={() => { if (searchOpen) { setSearchOpen(false) } }} className="text-white drop-shadow-md w-5 cursor-pointer h-full p-0.5" />

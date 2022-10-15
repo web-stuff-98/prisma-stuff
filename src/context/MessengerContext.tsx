@@ -11,6 +11,7 @@ export interface IMessage {
   createdAt: Date
   senderId: string
   id: string
+  receiverRead: boolean
 }
 
 const MessengerContext = createContext<
@@ -19,14 +20,29 @@ const MessengerContext = createContext<
       subject: string
       setSubject: (to: string) => void
       messengerHeading: string
+      notifications: number
+      setNotifications: (to: number) => void
     }
   | any
 >(undefined)
 
 export const MessengerProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<IMessage[]>([])
-  const [subject, setSubject] = useState('')
+  const [notifications, setNotifications] = useState(0)
+  const [subject, setSubjectState] = useState('')
   const [messengerHeading, setMessengerHeading] = useState('hello')
+
+  const setSubject = (to: string) => {
+    setSubjectState(to)
+    axios({
+      method: 'POST',
+      url: `/api/pusher/message?readByUserId=${to}`,
+    }).catch((e) => {
+      console.error(e)
+    }).then(() => {
+      setNotifications(messages.length - messages.filter((msg:any) => msg.senderId === to).length)
+    })
+  }
 
   const { pusher } = usePusher()
   const { data: session } = useSession()
@@ -68,6 +84,9 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
             },
           ]
         })
+        if(subject && subject === data.senderId) {
+          setNotifications(notifications+1)
+        }
         cacheProfileDataForUser(data.senderId)
       })
       return () => pusher.unsubscribe(`inbox=${session.uid}`)
@@ -75,7 +94,16 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
   }, [pusher, session])
 
   return (
-    <MessengerContext.Provider value={{ messages, subject, setSubject, messengerHeading }}>
+    <MessengerContext.Provider
+      value={{
+        messages,
+        subject,
+        setSubject,
+        messengerHeading,
+        notifications,
+        setNotifications,
+      }}
+    >
       {children}
     </MessengerContext.Provider>
   )

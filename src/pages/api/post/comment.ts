@@ -6,11 +6,6 @@ import pusher from "../../../utils/pusher";
 
 import { nanoid } from "nanoid/async"
 
-/*
-    was going to do comments on comments on comments,
-    but the schema was too confusing. you can reply to comments though.
-*/
-
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if(req.method !== "POST" && req.method !== "PATCH" && req.method !== "GET") return res.status(405).end()
 

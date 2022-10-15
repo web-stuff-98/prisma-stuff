@@ -232,10 +232,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     maxPage: Math.ceil(feedQ_count.length / 20),
   }
 
-  await redisClient?.set(
-    JSON.stringify(clientQueryInput),
-    JSON.stringify(props),
-  )
+  const key = JSON.stringify(clientQueryInput)
+  const expiration:number = process.env.NODE_ENV === "development" ? 5 : 60
+  await redisClient?.setEx(key, expiration, JSON.stringify(props))
 
   await redisClient?.disconnect()
 

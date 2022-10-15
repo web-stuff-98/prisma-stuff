@@ -132,13 +132,16 @@ model User {
 }
 
 model Message {
-  id         String @id @default(cuid())
-  message    String
-  sender     User   @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
-  senderId   String
-  receiverId String
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  message      String
+  sender       User     @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver     User     @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  senderId     String
+  receiverId   String
+  receiverRead Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([senderId])
 }
 
 enum Role {
