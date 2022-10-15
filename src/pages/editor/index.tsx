@@ -134,7 +134,7 @@ const Editor = ({ post }: { post: any }) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
   return (
     <form
-      className="container p-1 pt-4 mx-auto gap-2 flex flex-col"
+      className="md:container p-1 pt-4 mx-auto gap-2 flex flex-col"
       onSubmit={formik.handleSubmit}
     >
       <label className="mx-auto mt-1" htmlFor="title">

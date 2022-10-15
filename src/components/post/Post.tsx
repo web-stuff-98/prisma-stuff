@@ -13,6 +13,7 @@ export type IPost = {
   author: { name: string; image: string; id: string }
   shares: string[]
   likes: string[]
+  comments: number
   createdAt: string
 }
 
@@ -87,6 +88,9 @@ export default function Post({
             userData={findUserData(post.author.id)}
             post={post}
           />
+        </div>
+        <div className="text-xs pt-1 sm:mx-auto text-zinc-800 dark:text-zinc-500">
+          {post.comments} comment{post.comments === 1 ? '' : 's'}
         </div>
       </div>
     </article>

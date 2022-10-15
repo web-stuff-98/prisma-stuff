@@ -74,6 +74,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <div className="flex gap-3 p-6 pb-0 mx-auto">
               {searchTags.map((tag: string) => (
                 <div
+                  key={tag}
                   onClick={() => autoAddRemoveSearchTag(tag)}
                   className="border text-xs font-bold cursor-pointer bg-indigo-800 px-2 rounded border-black dark:border-zinc-500 flex-wrap dark:hover:bg-indigo-600 text-white shadow flex items-center shadow-md"
                 >
@@ -90,20 +91,19 @@ export default function Layout({ children }: { children: ReactNode }) {
           <div
             style={{
               background: 'rgba(0, 0, 0, 0.5)',
-              left: '0',
-              top: '0',
               backdropFilter: 'blur(1px)',
+              top: '0',
+              left: '0',
             }}
             className="z-50 flex justify-center items-center w-screen h-screen fixed"
           >
             {/* Modal container */}
-            <div className="container flex flex-col h-80 w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-neutral-900 border border-black dark:border-zinc-700 absolute">
-              <div className="w-full bg-zinc-100 dark:bg-neutral-800 dark:outline-zinc-700 outline items-center outline-1 flex justify-end">
+            <div className="flex flex-col h-80 w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-neutral-900 border border-black dark:border-zinc-700 absolute">
+              <div className="w-full md:container bg-zinc-100 dark:bg-neutral-800 dark:outline-zinc-700 outline items-center outline-1 flex justify-end">
                 <div className="grow px-1 font-bold text-xs">
                   {subject ? (
                     <>
-                      Conversation with{' '}
-                      {getConverseeName(findUserData(subject))}
+                      Conversation with {getConverseeName(findUserData(subject))}
                     </>
                   ) : (
                     <>

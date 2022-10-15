@@ -54,11 +54,9 @@ const Page = ({
         setAsideClientWidth(asideRootRef.current?.clientWidth)
     }
     resized()
-    asideRootRef.current.addEventListener('resize', resized)
-    asideRootRef.current.addEventListener('blur', resized)
-    return () =>  { 
-      asideRootRef.current?.removeEventListener('resize', resized)
-      asideRootRef.current?.removeEventListener('blur', resized)
+    window.addEventListener('resize', resized)
+    return () => {
+      window.removeEventListener('resize', resized)
     }
   }, [asideRootRef.current])
 
@@ -79,7 +77,7 @@ const Page = ({
       </div>
       <div ref={asideRootRef} className="w-2/6">
         <aside
-        style={{ width: `${asideClientWidth}px` }}
+          style={{ width: `${asideClientWidth}px` }}
           className="fixed py-2 h-full"
         >
           <div className="flex flex-col shadow-sm rounded border gap-2 dark:border-zinc-800 pb-1">
@@ -109,26 +107,44 @@ const Page = ({
   )
 }
 
+import redisClient from '../../../utils/redis'
+
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   query,
 }) => {
+  try {
+    await redisClient?.connect()
+  } catch (e) {
+    console.error(`Could not connect to redis : ${e}`)
+  }
+
+  /* The users parsed query parameters. Stored as keyname on redis so cached props can be looked up */
   const { tags: rawTags } = query
-  const numPerPage = 20
-  const pageOffset = Number(Math.max(Number(params?.page) - 1, 0) * numPerPage)
-  const tags = rawTags
-    ? String(rawTags)
-        .toLowerCase()
-        .split(' ')
-        .filter((tag: string) => tag.trim() !== '')
-        .map((tag: string) => tag.replace(/[^\w-]+/g, ''))
-    : []
+  const clientQueryInput = {
+    tags: rawTags
+      ? String(rawTags)
+          .toLowerCase()
+          .split(' ')
+          .filter((tag: string) => tag.trim() !== '')
+          .map((tag: string) => tag.replace(/[^\w-]+/g, ''))
+      : [],
+    pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
+  }
+  const cachedProps = await redisClient?.get(JSON.stringify(clientQueryInput))
+  if (cachedProps) {
+    return {
+      props: JSON.parse(cachedProps),
+    }
+  }
 
   const feedQ = await prisma.post.findMany({
     where: {
       published: true,
       imagePending: false,
-      ...(rawTags ? { tags: { some: { name: { in: tags } } } } : {}),
+      ...(rawTags
+        ? { tags: { some: { name: { in: clientQueryInput.tags } } } }
+        : {}),
     },
     include: {
       author: { select: { id: true } },
@@ -137,19 +153,46 @@ export const getServerSideProps: GetServerSideProps = async ({
       likes: true,
     },
     orderBy: { createdAt: 'desc' },
-    skip: pageOffset,
-    take: numPerPage,
+    skip: clientQueryInput.pageOffset,
+    take: 20,
   })
-  // doing 2 queries ........... need to count the total number of posts for display. havent looked hard for a better solution
+  //add in the comment count.
+  let outFeed: any[] = await Promise.all(
+    feedQ.map(
+      (p: any) =>
+        new Promise((resolve, reject) => {
+          let cmtCount = 0
+          prisma.commentOnPost
+            .findMany({
+              where: { postId: p.id },
+              select: { CommentOnPostComment: true },
+            })
+            .then((cmts) => {
+              cmts.forEach((cmt) => {
+                cmtCount += cmt.CommentOnPostComment.length + 1
+              })
+              resolve({
+                ...p,
+                comments: cmtCount,
+              })
+            })
+            .catch((e) => reject(e))
+        }),
+    ),
+  )
+
+  // doing 2 queries to count the total number of posts without pagination.....
   const feedQ_count = await prisma.post.findMany({
     where: {
       published: true,
       imagePending: false,
-      ...(rawTags ? { tags: { some: { name: { in: tags } } } } : {}),
+      ...(rawTags
+        ? { tags: { some: { name: { in: clientQueryInput.tags } } } }
+        : {}),
     },
     select: { id: true },
   })
-  const feed = feedQ.map((data: any) => ({
+  const feed = outFeed.map((data: any) => ({
     ...data,
     tags: data.tags.map((tag: any) => tag.name),
   }))
@@ -179,15 +222,21 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     },
   })
-  return {
-    props: {
-      feed: JSON.parse(JSON.stringify(feed)),
-      popular,
-      pageCount: feedQ.length,
-      fullCount: feedQ_count.length,
-      maxPage: Math.ceil(feedQ_count.length / 20),
-    },
+
+  const props = {
+    feed: JSON.parse(JSON.stringify(feed)),
+    popular,
+    pageCount: feedQ.length,
+    fullCount: feedQ_count.length,
+    maxPage: Math.ceil(feedQ_count.length / 20),
   }
+
+  await redisClient?.set(
+    JSON.stringify(clientQueryInput),
+    JSON.stringify(props),
+  )
+
+  return { props }
 }
 
 export default Page
