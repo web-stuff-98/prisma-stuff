@@ -49,7 +49,7 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
         .split('+')
         .filter((tag: string) => tag !== '')
     if (tags.includes(tag)) tags = tags.filter((t: string) => t !== tag)
-    //sort tags alphabetically using localeCompare so that redundant query-props key value pairs are stored on redis
+    //sort tags alphabetically using localeCompare so that no redundant query-props key value pairs for tags are stored on redis
     else tags = [...tags, tag].sort((a:string, b:string) => a.localeCompare(b))
     setSearchTags(tags)
     push(`/blog/page/1${tags.length > 0 ? `?tags=` + tags.join('+') : ''}`)
