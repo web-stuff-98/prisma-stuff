@@ -9,14 +9,15 @@ import { CgDarkMode, CgProfile } from "react-icons/cg"
 import { AiOutlineMenu } from "react-icons/ai"
 import { FiSettings } from "react-icons/fi"
 
-import { useModal } from "../../../context/ModalContext"
+import { useModal } from "../../context/ModalContext"
 
-import { EModalType } from "../../../context/ModalContext"
+import { EModalType } from "../../context/ModalContext"
+import { useDarkMode } from "../../pages/_app"
 
 export default function Nav() {
     const { data: session, status } = useSession()
-
     const { dispatch: mDispatch } = useModal()
+    const { darkMode, setDarkMode } = useDarkMode()
 
     const [searchOpen, setSearchOpen] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -31,7 +32,7 @@ export default function Nav() {
     const chatRef = useRef<HTMLDivElement>(null)
     const settingsRef = useRef<HTMLDivElement>(null)
     return (
-        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear" }} className="font-black px-1 h-6 md:px-2 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-zinc-900 md:bg-white dark:md:bg-zinc-900 dark:md:border-b dark:sm:border-b dark:border-zinc-800 h-full">
+        <nav ref={navRef} style={{ transition: "height 100ms linear, padding 100ms linear" }} className="font-black px-1 h-6 md:px-2 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-neutral-900 md:bg-white dark:md:bg-neutral-800 dark:md:border-b dark:sm:border-b dark:border-zinc-800 h-full">
             <div ref={navInnerRef} className="flex justify-between items-center h-full w-full md:container mx-auto my-auto ">
                 <div className={mobileMenuOpen ? "flex flex-col gap-6 items-start" : "flex items-center"}>
                     {/* Navlinks / Hamburger Icon */}
@@ -62,7 +63,7 @@ export default function Nav() {
                     </div>
                 </div>
                 <div className="my-auto drop-shadow-lg flex items-center gap-0.5 justify-center">
-                    <div ref={darkModeRef} className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer">
+                    <div onClick={() => setDarkMode(!darkMode)} ref={darkModeRef} className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer">
                         <CgDarkMode className="text-white w-5 h-full p-0.5 drop-shadow-md" />
                     </div>
                     {session && <Link href={`/profile/${session?.uid}`}>

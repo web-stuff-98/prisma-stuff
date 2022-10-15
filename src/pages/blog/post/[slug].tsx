@@ -43,8 +43,8 @@ export default function Post({ post }: { post: any }) {
 
   return (
     <>
-      {post && <div className="flex flex-col justify-center p-3 w-full">
-        <div className="relative shadow-md h-60 w-full p-3 rounded overflow-hidden">
+      {post && <div className="flex flex-col justify-center my-1 p-3 w-full">
+        <div className="relative shadow-md h-60 w-full p-3 rounded-sm overflow-hidden">
           <Image layout="fill" blurDataURL={post.blur} placeholder="blur" alt={post.title} objectPosition="absolute" objectFit="cover" src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${post.id}`} />
         </div>
         {session && (session?.uid === post.author.id) &&

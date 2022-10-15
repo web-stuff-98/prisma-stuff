@@ -2,6 +2,15 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer utilities {
+    .headerImageDarkMode {
+        filter:invert(1) opacity(0.444);
+    }
+    .headerImage {
+        filter: opacity(0.444);
+    }
+}
+
 @font-face {
     font-family: 'Poe Vetica New';
     src: url(/public/texgyreheros-regular.otf) format('otf');

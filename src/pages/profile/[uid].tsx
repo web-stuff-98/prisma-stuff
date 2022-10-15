@@ -30,7 +30,7 @@ export default function Profile({ user }: { user: IUserProfile }) {
         <div className="container mx-auto flex flex-col justify-center">
             <div className="flex flex-col items-center justify-center">
                 <div className="mx-auto mt-2 flex items-center p-1">
-                    <h1 className="text-3xl p-3 text-center">{user.name}</h1>
+                    <h1 className="text-2xl p-3 font-ArchivoBlack text-center">{user.name}</h1>
                     <div className="relative w-10 h-10 overflow-hidden rounded-full shadow-lg">
                         <Image src={user.image} className="absolute" layout="fill" />
                     </div>

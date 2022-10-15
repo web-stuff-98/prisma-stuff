@@ -2,6 +2,7 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
+  darkMode: 'class',
   purge: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
@@ -9,11 +10,11 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: '2px',
+      sm: '1px',
       md: '700px',
       lg: '780px',
-      xl: '1024px'
-    },  
+      xl: '900px'
+    },
     extend: {
       fontFamily: {
         Archivo: ["Archivo", ...defaultTheme.fontFamily.sans],
@@ -27,7 +28,7 @@ module.exports = {
       },
       minWidth: {
         postWidth: "16em"
-      }
+      },
     },
   },
   plugins: [],
