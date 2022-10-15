@@ -10,6 +10,7 @@ Features :
  - Create, edit and delete blog posts
  - Delete your account and change your username
  - Signin with Auth0 (tested with gmail, Next js image domain config not configured to work with other login providers)
+ - Comment on posts
  - Comment on a comment (but you can't comment on a comment on a comment)
 
 It is missing chatrooms and file attachments, because I couldn't be bothered to add them in this time, also profile pictures cannot be customized and username updates won't show up for other users without a refresh.

@@ -7,12 +7,12 @@ export default function Header() {
     <div className="w-full relative sm:text-white md:text-black md:bg-white text-black md:border-b border-dashed sm:bg-neutral-900 dark:sm:bg-neutral-900 dark:sm:border-b dark:sm:border-zinc-800 dark:sm:border-dashed dark:text-white font-bold sm:pl-3 text-3xl flex items-center dark:md:bg-neutral-900 sm:justify-start sm:text-left md:text-center md:justify-center h-16 bg-white">
       <div
         style={{ lineHeight: '1' }}
-        className="relative text-3xl sm:text-2xl font-ArchivoBlack"
+        className="relative md:text-3xl sm:text-2xl font-ArchivoBlack"
       >
         Prisma-stuff
         <br />
         <div className="text-xs font-Archivo">
-          Serverside blog and chat using Prisma & Tailwind
+          Blog & chat using Prisma, Tailwind and Redis
         </div>
         <img
           style={{

@@ -117,7 +117,7 @@ export default function User({
           >
             <Image layout="fill" src={userData.image} />
           </div>
-          <span className={`${large ? "text-lg font-bold pl-1" : "text-xs"}`}>{post ? "by " : "" + userData.name}</span>
+          <span className={`${large ? "text-lg font-bold pl-1" : "text-xs"}`}>{post ? `by ${userData.name}` : userData.name}</span>
         </>
       )}
     </div>

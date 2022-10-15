@@ -89,7 +89,11 @@ export default function Post({
             post={post}
           />
         </div>
-        <div className="text-xs pt-1 sm:mx-auto text-zinc-800 dark:text-zinc-500">
+        <div
+          className={`text-xs pt-1 w-full sm:text-center ${
+            reverse ? 'md:text-right' : 'md:text-left'
+          } text-zinc-800 dark:text-zinc-500`}
+        >
           {post.comments} comment{post.comments === 1 ? '' : 's'}
         </div>
       </div>
