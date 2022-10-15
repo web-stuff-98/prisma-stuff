@@ -110,11 +110,11 @@ export default function Messenger() {
                         />
                       </div>
                       <div className="flex flex-col items-start text-xs justify-center">
-                        <div style={{ lineHeight: '0.866', fontSize: '10px' }}>
+                        <div style={{ lineHeight: '0.866', fontSize: '0.7rem' }}>
                           {msg.createdAt.getDay()}/{msg.createdAt.getMonth()}/
                           {`${msg.createdAt.getFullYear()}`.slice(2, 4)}
                         </div>
-                        <div style={{ lineHeight: '0.866', fontSize: '10px' }}>
+                        <div style={{ lineHeight: '0.866', fontSize: '0.66rem' }}>
                           {msg.createdAt.getHours()}:
                           {msg.createdAt.getMinutes()}
                         </div>

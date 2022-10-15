@@ -4,8 +4,8 @@ function MyDocument() {
   return (
     <Html>
       <Head>
-        <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@300&display=swap" rel="stylesheet"/> 
-      </Head>
+      <link href="https://fonts.googleapis.com/css2?family=Archivo&family=Archivo+Black&display=swap" rel="stylesheet"/> 
+            </Head>
       <body className="dark:bg-neutral-900 dark:text-white">
         <Main />
         <NextScript />

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useFilter } from '../../context/FilterContext'
 import { useUsers } from '../../context/UsersContext'
-import PostAuthor from './PostAuthor'
+import User from '../User'
 
 export type IPost = {
   id: string
@@ -28,7 +28,7 @@ export default function Post({
 
   return (
     <article
-      className={`p-2 text-center gap-1 sm:flex-col md:flex ${
+      className={`p-2 md:pl-0 text-center gap-1 sm:flex-col md:flex ${
         reverse ? 'md:flex-row-reverse' : 'md:flex-row'
       } h-full w-full justify-evenly`}
     >
@@ -81,10 +81,10 @@ export default function Post({
           ))}
         </div>
         <div className="sm:mx-auto mt-1 md:mx-0">
-          <PostAuthor
+          <User
             key={post.id}
             reverse={reverse}
-            authorData={findUserData(post.author.id)}
+            userData={findUserData(post.author.id)}
             post={post}
           />
         </div>

@@ -5,16 +5,17 @@ import type {
   GetStaticPropsContext,
 } from 'next'
 import Head from 'next/head'
-import { useRef,forwardRef }from "react"
-import type { RefObject }from "react"
+import { useRef, forwardRef, ForwardedRef, useLayoutEffect } from 'react'
+import type { RefObject } from 'react'
 import Post, { IPost } from '../../../components/post/Post'
 
 import prisma from '../../../lib/prisma'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useUsers } from '../../../context/UsersContext'
 import { useFilter } from '../../../context/FilterContext'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const Page = ({
   feed,
@@ -41,20 +42,25 @@ const Page = ({
     setFullCount(fullCount)
     setPageCount(pageCount)
     setMaxPage(maxPage)
-    console.log(`Max page : ${maxPage}`)
   }, [feed])
 
   const asideRootRef = useRef<HTMLDivElement>(null)
+  const [asideClientWidth, setAsideClientWidth] = useState(126)
 
-  const useForwardedRef = (ref:RefObject<HTMLElement>) => {
-    const safeRef = useRef(ref)
-    return asideRootRef
-  }
-
-  const AsideRoot = forwardRef((props:any, ref:any) => {
-    const safeRef = useForwardedRef(ref)
-    return <aside style={{width:`${safeRef.current?.clientWidth}px`}} ref={useForwardedRef(ref)} className="w-2/6" {...props}/>
-  })
+  useEffect(() => {
+    if (!asideRootRef.current) return
+    const resized = () => {
+      if (asideRootRef.current)
+        setAsideClientWidth(asideRootRef.current?.clientWidth)
+    }
+    resized()
+    asideRootRef.current.addEventListener('resize', resized)
+    asideRootRef.current.addEventListener('blur', resized)
+    return () =>  { 
+      asideRootRef.current?.removeEventListener('resize', resized)
+      asideRootRef.current?.removeEventListener('blur', resized)
+    }
+  }, [asideRootRef.current])
 
   return (
     <div
@@ -72,8 +78,11 @@ const Page = ({
         ))}
       </div>
       <div ref={asideRootRef} className="w-2/6">
-        <AsideRoot className="fixed py-2 h-full">
-          <div className="flex flex-col rounded border gap-2 dark:border-zinc-800 pb-1">
+        <aside
+        style={{ width: `${asideClientWidth}px` }}
+          className="fixed py-2 h-full"
+        >
+          <div className="flex flex-col shadow-sm rounded border gap-2 dark:border-zinc-800 pb-1">
             <h2
               style={{ lineHeight: '1' }}
               className="font-sm md:font-bold py-2 mx-auto"
@@ -94,7 +103,7 @@ const Page = ({
                 </Link>
               ))}
           </div>
-        </AsideRoot>
+        </aside>
       </div>
     </div>
   )

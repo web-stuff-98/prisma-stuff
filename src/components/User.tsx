@@ -1,27 +1,29 @@
 import { useSession } from 'next-auth/react'
 import { AiOutlineShareAlt, AiOutlineLike } from 'react-icons/ai'
-import { IPost } from './Post'
+import { IPost } from './post/Post'
 
 import { useState } from 'react'
 
 import Image from 'next/image'
 
 import axios from 'axios'
-import { IUser, useUsers } from '../../context/UsersContext'
-import { useUserDropdown } from '../../context/UserDropdownContext'
-import { useMouse } from '../../context/MouseContext'
+import { IUser, useUsers } from '../context/UsersContext'
+import { useUserDropdown } from '../context/UserDropdownContext'
+import { useMouse } from '../context/MouseContext'
 import { useRouter } from 'next/router'
 
-export default function PostAuthor({
+export default function User({
   post,
-  authorData,
+  userData,
   includeLikesAndShares = true,
   reverse = false,
+  large = false,
 }: {
-  post: IPost
-  authorData: IUser
+  post?: IPost
+  userData: IUser
   includeLikesAndShares?: boolean
   reverse?: boolean
+  large?: boolean
 }) {
   const [clickedShared, setClickedShared] = useState(false)
   const [clickedLiked, setClickedLiked] = useState(false)
@@ -35,7 +37,7 @@ export default function PostAuthor({
     try {
       await axios({
         method: 'POST',
-        data: { postId: post.id },
+        data: { postId: post?.id },
         url: '/api/post/share',
       })
     } catch (e) {
@@ -47,7 +49,7 @@ export default function PostAuthor({
     try {
       await axios({
         method: 'POST',
-        data: { postId: post.id },
+        data: { postId: post?.id },
         url: '/api/post/like',
       })
     } catch (e) {
@@ -63,9 +65,9 @@ export default function PostAuthor({
         reverse ? 'flex flex-row-reverse' : 'flex'
       } gap-1 items-center`}
     >
-      {authorData && (
+      {userData && (
         <>
-          {includeLikesAndShares && (
+          {includeLikesAndShares && post && (
             <div className="flex flex-col text-xs items-center justify-center">
               <div className="flex items-center">
                 <AiOutlineShareAlt
@@ -73,9 +75,9 @@ export default function PostAuthor({
                   style={{ strokeWidth: '2px' }}
                   className="text-black dark:text-white w-4 h-4 drop-shadow cursor-pointer"
                 />
-                {post.shares.length +
+                {post?.shares.length +
                   (clickedShared && session
-                    ? post.shares.find(
+                    ? post?.shares.find(
                         (share: any) => share.userId === String(session?.uid),
                       )
                       ? -1
@@ -88,9 +90,9 @@ export default function PostAuthor({
                   style={{ strokeWidth: '2px' }}
                   className="text-black dark:text-white w-4 h-4 drop-shadow cursor-pointer"
                 />
-                {post.likes.length +
+                {post?.likes.length +
                   (clickedLiked && session
-                    ? post.likes.find(
+                    ? post?.likes.find(
                         (like: any) => like.userId === String(session?.uid),
                       )
                       ? -1
@@ -101,21 +103,21 @@ export default function PostAuthor({
           )}
           <div
             onClick={() => {
-              if (!session || authorData.id === session.uid) {
-                push(`/profile/${authorData.id}`)
+              if (!session || userData.id === session.uid) {
+                push(`/profile/${userData.id}`)
                 return
               }
               userDropdownDispatch({
                 showDropdown: true,
-                subjectUserId: authorData.id,
+                subjectUserId: userData.id,
                 dropdownPos: mousePos,
               })
             }}
-            className="bg-stone-500 cursor-pointer overflow-hidden shadow h-7 w-7 rounded-full relative"
+            className={`bg-stone-500 ${large ? "h-10 w-10" : "h-7 w-7"} cursor-pointer overflow-hidden shadow rounded-full relative`}
           >
-            <Image layout="fill" src={authorData.image} />
+            <Image layout="fill" src={userData.image} />
           </div>
-          <span className="text-xs text-gray-500">by {authorData.name}</span>
+          <span className={`${large ? "text-lg font-bold pl-1" : "text-xs"}`}>{post ? "by " : "" + userData.name}</span>
         </>
       )}
     </div>

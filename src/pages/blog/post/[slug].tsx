@@ -3,11 +3,12 @@ import prisma from "../../../lib/prisma";
 
 import Image from "next/image";
 
+import User from "../../../components/User";
+
 import { useState, useEffect } from "react";
 import IResponseMessage from "../../../interfaces/IResponseMessage";
 
 import Comments from "../../../components/comments/Comments";
-import PostAuthor from "../../../components/post/PostAuthor";
 import { CommentOnPost, CommentOnPostComment } from "@prisma/client";
 import { useUsers } from "../../../context/UsersContext";
 import { has } from "lodash";
@@ -44,9 +45,7 @@ export default function Post({ post }: { post: any }) {
   return (
     <>
       {post && <div className="flex flex-col justify-center my-1 p-3 w-full">
-        <div className="relative shadow-md h-60 w-full p-3 rounded-sm overflow-hidden">
-          <Image layout="fill" blurDataURL={post.blur} placeholder="blur" alt={post.title} objectPosition="absolute" objectFit="cover" src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${process.env.NODE_ENV === "development" ? "/dev" : ""}/${post.id}`} />
-        </div>
+        <User userData={findUserData(session?.uid)}/>
         {session && (session?.uid === post.author.id) &&
          <div className="flex gap-2 items-center justify-center">
         <div className="flex gap-2 pt-2">
@@ -58,7 +57,7 @@ export default function Post({ post }: { post: any }) {
         </div>}
         <h1 className="text-3xl mx-auto text-center mt-3">{post.title}</h1>
         <div className="py-2 mx-auto">
-          <PostAuthor authorData={findUserData(post.author.id)} post={post} />
+          <User userData={findUserData(post.author.id)} post={post} />
         </div>
         <p className="mx-auto text-center">{post.content}</p>
         <Comments inComments={post.comments} postId={post.id} />
