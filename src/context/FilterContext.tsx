@@ -77,10 +77,8 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
       .split('+')
         .filter((tag: string) => tag.trim() !== '')
     if (tags.includes(tag.toLowerCase())) {
-      console.log(`Removed tag : ${tag}`)
       tags = tags.filter((t: string) => t !== tag.toLowerCase())
     } else {
-      console.log(`Added tag : ${tag}`)
       tags = [...tags, tag.toLowerCase()]
     }
     //sort tags alphabetically so that redundant query-props key value pairs for tags are not stored on redis
