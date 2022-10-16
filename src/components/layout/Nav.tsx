@@ -59,7 +59,7 @@ export default function Nav() {
           >
             <Link href="/about">About</Link>
             <Link href="/blog/page/1">Blog</Link>
-            <Link href="/editor">Editor</Link>
+            {status === 'authenticated' && <Link href="/editor">Editor</Link>}
             {status === 'unauthenticated' && (
               <Link href="/api/auth/signin">Login</Link>
             )}
@@ -92,13 +92,13 @@ export default function Nav() {
             />
           </div>
         </div>
-        <div className="my-auto drop-shadow-lg flex items-center gap-0.5 justify-center">
+        <div className="my-auto flex items-center gap-0.5 justify-center">
           <div
             onClick={() => setDarkMode(!darkMode)}
             ref={darkModeRef}
             className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer"
           >
-            <CgDarkMode className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+            <CgDarkMode className="text-white w-5 h-full p-0.5" />
           </div>
           {session && (
             <Link href={`/profile/${session?.uid}`}>
@@ -106,7 +106,7 @@ export default function Nav() {
                 ref={profileRef}
                 className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer"
               >
-                <CgProfile className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+                <CgProfile className="text-white w-5 h-full p-0.5" />
               </div>
             </Link>
           )}
@@ -118,7 +118,7 @@ export default function Nav() {
               ref={settingsRef}
               className="flex justify-center items-center bg-zinc-700 rounded cursor-pointer"
             >
-              <FiSettings className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+              <FiSettings className="text-white w-5 h-full p-0.5" />
             </div>
           )}
           <div
@@ -128,12 +128,12 @@ export default function Nav() {
             }
             className="flex justify-center items-center bg-amber-700 rounded cursor-pointer relative"
           >
-            <IoChatboxSharp className="text-white w-5 h-full p-0.5 drop-shadow-md" />
+            <IoChatboxSharp className="text-white w-5 h-full p-0.5" />
             {/* notifications */}
             {notifications > 0 && (
               <div
                 style={{ bottom: '-20%', right: '-20%' }}
-                className="text-lime-500 drop-shadow absolute z-50 font-bold"
+                className="text-lime-500 absolute z-50 font-bold"
               >
                 +{notifications}
               </div>
@@ -157,7 +157,7 @@ export default function Nav() {
                   setSearchOpen(false)
                 }
               }}
-              className="text-white drop-shadow-md w-5 cursor-pointer h-full p-0.5"
+              className="text-white w-5 cursor-pointer h-full p-0.5"
             />
             {searchOpen && (
               <input
@@ -167,7 +167,7 @@ export default function Nav() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setSearchTerm(e.target.value)
                 }
-                className="bg-transparent focus:outline-none text-xs border-b drop-shadow-md h-full text-white border-white"
+                className="bg-transparent focus:outline-none text-xs border-b h-full text-white border-white"
               />
             )}
           </div>

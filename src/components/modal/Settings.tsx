@@ -90,16 +90,13 @@ export default function Settings() {
             </button>
           </div>
         </div>
-        <div className="grow border w-full text-center flex flex-col items-center justify-center text-xs gap-2 font-bold p-2 rounded-sm mt-1 flex items-center dark:border-zinc-700">
-          Double click to delete your account
           <button
             type="button"
-            onDoubleClick={() => deleteAccount()}
-            className="py-2 w-20 text-md w-full text-white bg-rose-900 dark:border-zinc-300 shadow rounded-lg border"
+            onClick={() => deleteAccount()}
+            className="text-xs w-full text-white bg-rose-900 dark:border-zinc-300 shadow rounded-sm mt-1 py-1 border"
           >
-            DELETE
+            DELETE ACCOUNT
           </button>
-        </div>
         {resMsg.msg && <div className='text-md'>{resMsg.msg}</div>}
       </div>
     </div>

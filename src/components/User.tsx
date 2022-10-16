@@ -18,12 +18,14 @@ export default function User({
   includeLikesAndShares = true,
   reverse = false,
   large = false,
+  date = undefined,
 }: {
   post?: IPost
   userData: IUser
   includeLikesAndShares?: boolean
   reverse?: boolean
   large?: boolean
+  date?: Date
 }) {
   const [clickedShared, setClickedShared] = useState(false)
   const [clickedLiked, setClickedLiked] = useState(false)
@@ -63,7 +65,7 @@ export default function User({
     <div
       className={`${
         reverse ? 'flex flex-row-reverse' : 'flex'
-      } gap-1 items-center`}
+      } gap-1 items-center min-w-max`}
     >
       {userData && (
         <>
@@ -113,11 +115,18 @@ export default function User({
                 dropdownPos: mousePos,
               })
             }}
-            className={`bg-stone-500 ${large ? "h-10 w-10" : "h-7 w-7"} cursor-pointer overflow-hidden shadow rounded-full relative`}
+            className={`bg-stone-500 ${
+              large ? 'h-10 w-10' : 'h-7 w-7'
+            } cursor-pointer overflow-hidden shadow rounded-full relative`}
           >
             <Image layout="fill" src={userData.image} />
           </div>
-          <span className={`${large ? "text-lg font-bold pl-1" : "text-xs"}`}>{post ? `by ${userData.name}` : userData.name}</span>
+          <span style={{lineHeight:"1"}} className={`${large ? 'text-lg font-bold pl-1' : 'text-xs'}`}>
+            {post ? `by ${userData.name}` : userData.name}
+            {<div style={{lineHeight:"1"}} className='text-xs font-normal'>
+            {date && `created ${date?.toDateString()}`}
+            </div>}
+          </span>
         </>
       )}
     </div>

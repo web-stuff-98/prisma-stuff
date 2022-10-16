@@ -14,8 +14,8 @@ module.exports = {
   theme: {
     screens: {
       sm: "1px",
-      md: "600px",
-      lg: "768px",
+      md: "680px",
+      lg: "860px",
     },
     extend: {
       fontFamily: {
@@ -23,14 +23,17 @@ module.exports = {
         ArchivoBlack: ["Archivo Black", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        darkBackground: "rgb(21,21,24)",
+        darkBackground: "rgb(23,23,26)",
       },
       height: {
         postHeight: "13.666em",
       },
       minWidth: {
-        postWidth: "16em",
+        postWidth: "15em",
       },
+      maxWidth: {
+        postWidth: "15em",
+      }
     },
   },
   plugins: [require("@tailwindcss/typography")],

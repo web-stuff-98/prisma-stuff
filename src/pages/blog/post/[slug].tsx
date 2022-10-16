@@ -31,11 +31,13 @@ export default function Post({ post }: { post: any }) {
 
   const deletePost = async () => {
     try {
+      setResMsg({msg:"", err:false, pen:true})
       await axios({
         method: 'DELETE',
         url: `/api/post?id=${post.id}`,
       })
-    } catch (e) {
+      setResMsg({msg:"Post deleted", err:false, pen:false})
+    } catch (e:AxiosError | any) {
       e.response
         ? //@ts-ignore-error
           has(e.response, 'data')
@@ -83,7 +85,10 @@ export default function Post({ post }: { post: any }) {
               </div>
             </div>
           )}
-          <div className="flex items-end justify-center py-2 gap-2">
+          <div className='text-3xl mx-auto font-ArchivoBlack'>
+              {resMsg.msg}
+          </div>
+          <div className="flex items-end justify-start py-6 gap-2">
             <div>
               <h1
                 style={{ lineHeight: '1' }}
@@ -98,12 +103,14 @@ export default function Post({ post }: { post: any }) {
                 {post.description}
               </p>
             </div>
-              <User userData={findUserData(post.author.id)} post={post} />
+              <User date={new Date(String(post.createdAt))} userData={findUserData(post.author.id)} post={post} />
           </div>
-          <hr className="mb-2 border-zinc-300 dark:border-zinc-800" />
+          <hr className="border-zinc-100 dark:border-zinc-800" />
           <div
             style={{ lineHeight: '1.166' }}
             className="
+            mt-3
+            p-4
             prose
             prose-sm
             prose-h1:font-ArchivoBlack

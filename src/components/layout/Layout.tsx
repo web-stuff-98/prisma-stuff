@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const getConverseeName = (u: IUser) => (u ? u.name : '')
 
   return (
-    <div className="w-full h-screen font-Archivo">
+    <div className="w-full h-full h-screen font-Archivo">
       <div className="w-full h-full">
         <div className="fixed top z-50 w-full dark:shadow-none">
           <Header />
@@ -66,44 +66,50 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
         <main
           className={
-            'md:container mx-auto relative flex flex-col pt-20 ' +
+            'md:container mx-auto relative flex flex-col h-full pt-20' +
             (pathname.includes('/blog/page/') ? ' pb-12' : '')
           }
         >
-          {searchTags.length > 0 && pathname.includes('/blog/page/') && (
-            <div className="flex gap-3 p-6 pb-0 mx-auto">
-              {searchTags.map((tag: string) => (
-                <div
-                  key={tag}
-                  onClick={() => autoAddRemoveSearchTag(tag.trim())}
-                  className="border text-xs font-bold cursor-pointer bg-indigo-800 px-2 rounded border-black dark:border-zinc-500 dark:hover:bg-indigo-600 text-white shadow flex items-center shadow-md"
-                >
-                  {tag}
-                </div>
-              ))}
-            </div>
-          )}
-          {children}
+          <div className="w-full outline outline-1 dark:outline-zinc-800 outline-zinc-200 bg-white dark:bg-zinc-900 h-full">
+            {searchTags.length > 0 && pathname.includes('/blog/page/') && (
+              <div className="flex gap-2 p-6 pb-0 flex-wrap justify-center mx-auto">
+                {searchTags.map((tag: string) => (
+                  <div
+                    key={tag}
+                    onClick={() => autoAddRemoveSearchTag(tag.trim())}
+                    className="border text-xs font-bold cursor-pointer bg-indigo-800 dark:bg-amber-700 dark:hover:bg-amber-600 px-2 rounded border-black dark:border-white dark:hover:bg-indigo-600 text-white shadow flex items-center shadow-md"
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div>{children}</div>
+          </div>
         </main>
         {userDropdownState.showDropdown && <UserDropdown />}
         {/* Modal */}
         {mState.showModal && (
           <div
             style={{
-              background: 'rgba(0, 0, 0, 0.5)',
-              backdropFilter: 'blur(1px)',
+              background: 'rgba(0, 0, 0, 0.25)',
+              backdropFilter: 'blur(2px)',
               top: '0',
               left: '0',
             }}
             className="z-50 flex justify-center items-center w-screen h-screen fixed"
           >
             {/* Modal container */}
-            <div style={{maxWidth:"90%"}} className="flex flex-col w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-neutral-900 border border-black dark:border-zinc-700 absolute">
-              <div className="w-full md:container bg-zinc-100 dark:bg-neutral-800 dark:outline-zinc-700 outline items-center outline-1 flex justify-end">
+            <div
+              style={{ maxWidth: '90%' }}
+              className="flex flex-col w-60 rounded shadow-xl bg-white overflow-hidden dark:bg-zinc-900 border border-black dark:border-zinc-700 absolute"
+            >
+              <div className="w-full md:container bg-zinc-100 dark:bg-zinc-800 dark:outline-zinc-700 outline items-center outline-1 flex justify-end">
                 <div className="grow px-1 font-bold text-xs">
                   {subject ? (
                     <>
-                      Conversation with {getConverseeName(findUserData(subject))}
+                      Conversation with{' '}
+                      {getConverseeName(findUserData(subject))}
                     </>
                   ) : (
                     <>

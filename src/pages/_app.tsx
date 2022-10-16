@@ -16,15 +16,16 @@ import { MessengerProvider } from '../context/MessengerContext'
 
 import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
+import { AuthGuard } from '../utils/PageGuard'
 
 interface IDarkModeCtx {
   darkMode: boolean
   setDarkMode: (to: boolean) => void
 }
 
-const darkModeCtxDefaultValue:IDarkModeCtx = {
-  darkMode:true,
-  setDarkMode: (to:boolean) => {}
+const darkModeCtxDefaultValue: IDarkModeCtx = {
+  darkMode: true,
+  setDarkMode: (to: boolean) => {},
 }
 
 const DarkModeCtx = createContext<IDarkModeCtx>(darkModeCtxDefaultValue)
@@ -58,7 +59,16 @@ const App = ({
                   <FilterProvider>
                     <DarkModeProvider>
                       <Layout>
-                        <Component {...pageProps} />
+                        {
+                          //@ts-expect-error
+                          Component.requiresAuth ? (
+                            <AuthGuard>
+                              <Component {...pageProps} />
+                            </AuthGuard>
+                          ) : (
+                            <Component {...pageProps} />
+                          )
+                        }
                       </Layout>
                     </DarkModeProvider>
                   </FilterProvider>

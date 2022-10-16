@@ -15,7 +15,3 @@
     font-family: 'Poe Vetica New';
     src: url(/public/texgyreheros-regular.otf) format('otf');
 };
-
-.fixMarkdown {
-    background: red;
-}

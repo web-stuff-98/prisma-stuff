@@ -136,11 +136,11 @@ const Editor = ({ post }: { post: any }) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
   return (
     <form
-      className="md:container p-1 pt-4 mx-auto gap-2 flex flex-col"
+      className="md:container p-2 pt-4 mx-auto gap-2 flex flex-col"
       onSubmit={formik.handleSubmit}
     >
       <label className="mx-auto mt-1" htmlFor="title">
-        Title
+        Title ({formik.values.title.length} / 80)
       </label>
       <input
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
@@ -153,7 +153,7 @@ const Editor = ({ post }: { post: any }) => {
         value={formik.values.title}
       />
       <label className="mx-auto mt-1" htmlFor="description">
-        Description
+        Description ({formik.values.description.length} / 160)
       </label>
       <input
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
@@ -166,7 +166,7 @@ const Editor = ({ post }: { post: any }) => {
         value={formik.values.description}
       />
       <label className="mx-auto mt-1" htmlFor="tags">
-        Tags (start each tag with #)
+        Tags ({formik.values.tags.length} / 80, {formik.values.tags.split('#').filter((t:string) => t.trim() !== '').length} / 6 tags)
       </label>
       <input
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
@@ -179,7 +179,7 @@ const Editor = ({ post }: { post: any }) => {
         value={formik.values.tags}
       />
       <label className="mx-auto mt-1" htmlFor="content">
-        Markdown content
+        Markdown content ({formik.values.content.length} / 6000)
       </label>
       <textarea
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
@@ -258,5 +258,7 @@ const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 export { getServerSideProps }
+
+Editor.requiresAuth = true
 
 export default Editor

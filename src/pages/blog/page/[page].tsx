@@ -80,7 +80,7 @@ const Page = ({
           <div className="flex flex-col shadow-sm rounded border gap-2 dark:border-zinc-800 pb-1">
             <h2
               style={{ lineHeight: '1' }}
-              className="font-sm md:font-bold py-2 mx-auto"
+              className="font-sm font-ArchivoBlack py-2 mx-auto"
             >
               Popular
             </h2>

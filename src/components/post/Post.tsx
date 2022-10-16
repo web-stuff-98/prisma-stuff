@@ -25,16 +25,16 @@ export default function Post({
   reverse: boolean
 }) {
   const { findUserData } = useUsers()
-  const { autoAddRemoveSearchTag } = useFilter()
+  const { autoAddRemoveSearchTag, searchTags } = useFilter()
 
   return (
     <article
-      className={`p-2 md:pl-0 text-center gap-1 sm:flex-col md:flex ${
+      className={`p-2 md:pl-2 text-center gap-1 sm:flex-col md:flex ${
         reverse ? 'md:flex-row-reverse' : 'md:flex-row'
       } h-full w-full justify-evenly`}
     >
       <Link href={`/blog/post/${post.slug}`}>
-        <div className="relative border border-zinc-700 shadow-md cursor-pointer sm:w-full sm:h-28 md:w-64 md:min-w-postWidth md:h-postHeight bg-gray-200 shadow rounded overflow-hidden shadow">
+        <div className="relative border border-zinc-700 shadow-md cursor-pointer sm:w-full sm:h-28 md:w-64 md:min-w-postWidth md:max-w-postWidth md:h-postHeight bg-gray-200 shadow rounded overflow-hidden shadow">
           <Image
             layout="fill"
             objectFit="cover"
@@ -76,6 +76,9 @@ export default function Post({
             <div
               onClick={() => autoAddRemoveSearchTag(tag.trim())}
               key={tag}
+              style={searchTags.includes(tag) ? {
+                filter:"opacity(0.5) saturate(0)"
+              } : {}}
               className="text-xs rounded cursor-pointer bg-gray-900 hover:bg-gray-800 text-white hover:bg-gray-600 py-0.5 px-1 sm:py-0 dark:bg-amber-700 dark:hover:bg-amber-600 dark:border-zinc-200 dark:border"
             >
               {tag}

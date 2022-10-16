@@ -46,7 +46,7 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       })
       .then(() => {
         setNotifications(
-          messages.length -
+          messages.filter((msg:any) => msg.senderId !== session?.uid).length -
             messages.filter((msg: any) => msg.senderId === to).length,
         )
       })
