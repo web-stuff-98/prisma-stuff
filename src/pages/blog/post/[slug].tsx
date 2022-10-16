@@ -35,7 +35,7 @@ export default function Post({ post }: { post: any }) {
         method: 'DELETE',
         url: `/api/post?id=${post.id}`,
       })
-    } catch (e: AxiosError | any) {
+    } catch (e) {
       e.response
         ? //@ts-ignore-error
           has(e.response, 'data')
@@ -83,12 +83,49 @@ export default function Post({ post }: { post: any }) {
               </div>
             </div>
           )}
-          <h1 className="text-3xl mx-auto text-center mt-3">{post.title}</h1>
-          <div className="py-2 mx-auto">
-            <User userData={findUserData(post.author.id)} post={post} />
+          <div className="flex items-end justify-center py-2 gap-2">
+            <div>
+              <h1
+                style={{ lineHeight: '1' }}
+                className="text-lg text-left my-1 font-ArchivoBlack"
+              >
+                {post.title}
+              </h1>
+              <p
+                style={{ lineHeight: '1' }}
+                className="text-sm text-left"
+              >
+                {post.description}
+              </p>
+            </div>
+              <User userData={findUserData(post.author.id)} post={post} />
           </div>
-          <div className='prose-sm prose-a:text-indigo-500 prose-a:font-bold max-w-none'>
-          <ReactMarkdown children={post.content}/>
+          <hr className="mb-2 border-zinc-300 dark:border-zinc-800" />
+          <div
+            style={{ lineHeight: '1.166' }}
+            className="
+            prose
+            prose-sm
+            prose-h1:font-ArchivoBlack
+            prose-h2:font-ArchivoBlack
+            dark:prose-headings:text-white
+            dark:prose-headings:font-bold
+            dark:prose-lead:text-white
+            dark:prose-p:text-white
+            dark:prose-blockquote:text-white
+            dark:prose-li:text-white
+            dark:prose-strong:text-white
+            dark:prose-figure:text-white
+            dark:prose-figcaption:text-white
+            dark:prose-table:text-white
+            dark:prose-tr:text-white
+            dark:prose-th:text-white
+            dark:prose-td:text-white
+            prose-a:text-indigo-500
+            prose-a:font-bold
+            max-w-none"
+          >
+            <ReactMarkdown children={post.content} />
           </div>
           <Comments inComments={post.comments} postId={post.id} />
         </div>

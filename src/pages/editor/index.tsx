@@ -179,7 +179,7 @@ const Editor = ({ post }: { post: any }) => {
         value={formik.values.tags}
       />
       <label className="mx-auto mt-1" htmlFor="content">
-        Content
+        Markdown content
       </label>
       <textarea
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
