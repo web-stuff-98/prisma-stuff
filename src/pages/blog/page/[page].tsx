@@ -9,7 +9,7 @@ import { useRef, forwardRef, ForwardedRef, useLayoutEffect } from 'react'
 import type { RefObject } from 'react'
 import Post, { IPost } from '../../../components/post/Post'
 
-import prisma from '../../../lib/prisma'
+import prisma from '../../../utils/prisma'
 
 import { useEffect, useState } from 'react'
 import { useUsers } from '../../../context/UsersContext'

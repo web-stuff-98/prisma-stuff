@@ -1,7 +1,7 @@
 import { SharesOnPost } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../lib/prisma";
+import prisma from "../../../utils/prisma";
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if(req.method !== "POST") return res.status(405).end()

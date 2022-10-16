@@ -1,12 +1,13 @@
 import { CommentOnPost, CommentOnPostComment, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../lib/prisma";
+import prisma from "../../../utils/prisma";
 import pusher from "../../../utils/pusher";
 
 import { nanoid } from "nanoid/async"
+import { customRateLimit } from "../../../utils/redisRateLimit";
 
-export default async function handler(req:NextApiRequest, res:NextApiResponse) {
+async function handler(req:NextApiRequest, res:NextApiResponse) {
     if(req.method !== "POST" && req.method !== "PATCH" && req.method !== "GET") return res.status(405).end()
 
     const session = await getSession({req})
@@ -81,3 +82,9 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         return res.status(500).end()
     }
 }
+
+export default customRateLimit(handler, {
+    numReqs: 15,
+    exp: 30,
+    key: 'comment-requests',
+})

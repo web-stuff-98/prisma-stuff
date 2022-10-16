@@ -8,11 +8,11 @@ import { useFormik } from 'formik'
 import Image from 'next/image'
 import { GetServerSidePropsContext } from 'next'
 
-import prisma from '../../lib/prisma'
+import prisma from '../../utils/prisma'
 import { useRouter } from 'next/router'
 import ProgressBar from '../../components/progressBar/ProgressBar'
 
-import has from "lodash/has"
+import has from 'lodash/has'
 
 const Editor = ({ post }: { post: any }) => {
   const [resMsg, setResMsg] = useState<IResponseMessage>({
@@ -166,7 +166,12 @@ const Editor = ({ post }: { post: any }) => {
         value={formik.values.description}
       />
       <label className="mx-auto mt-1" htmlFor="tags">
-        Tags ({formik.values.tags.length} / 80, {formik.values.tags.split('#').filter((t:string) => t.trim() !== '').length} / 6 tags)
+        Tags ({formik.values.tags.length} / 80,{' '}
+        {
+          formik.values.tags.split('#').filter((t: string) => t.trim() !== '')
+            .length
+        }{' '}
+        / 6 tags)
       </label>
       <input
         className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
@@ -191,7 +196,9 @@ const Editor = ({ post }: { post: any }) => {
         rows={8}
         value={formik.values.content}
       />
-      {resMsg.msg && resMsg.msg}
+      <div className="text-center mx-auto font-ArchivoBlack">
+        {resMsg.msg && resMsg.msg}
+      </div>
       {resMsg.pen && <ProgressBar percent={progress} />}
       <input
         onChange={handleFileInput}

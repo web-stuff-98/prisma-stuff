@@ -2,7 +2,7 @@ import { NextApiHandler } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import Auth0Provider from 'next-auth/providers/auth0'
-import prisma from '../../../lib/prisma';
+import prisma from '../../../utils/prisma';
 
 //https://next-auth.js.org/getting-started/typescript#module-augmentation
 

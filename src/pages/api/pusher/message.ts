@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import pusher from "../../../utils/pusher";
+import { customRateLimit } from "../../../utils/redisRateLimit";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -69,3 +70,9 @@ export default async function handler(
     return res.status(400).json({ message: `${e}` });
   }
 }
+
+export default customRateLimit(handler, {
+  numReqs: 12,
+  exp: 12,
+  key: 'message-requests'
+})

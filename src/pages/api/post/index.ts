@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../lib/prisma";
+import prisma from "../../../utils/prisma";
 
 import cloudinary from "cloudinary";
 
 import { nanoid } from "nanoid/async";
 import imageProcessing from "../../../utils/imageProcessing";
+import { customRateLimit } from "../../../utils/redisRateLimit";
 
 cloudinary.v2.config({
   cloud_name: "dzpzb3uzn",
@@ -13,10 +14,10 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export default async function handler(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
-) {
+) => {
   const {
     title,
     content,
@@ -143,3 +144,9 @@ export default async function handler(
     }
   }
 }
+
+export default customRateLimit(handler, {
+  numReqs: 12,
+  exp: 21600,
+  key: 'editor-requests'
+})

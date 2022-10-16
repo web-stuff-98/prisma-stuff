@@ -1,6 +1,6 @@
 import { Post } from "@prisma/client";
 import { GetServerSidePropsContext } from "next";
-import prisma from "../../lib/prisma";
+import prisma from "../../utils/prisma";
 
 import Image from "next/image"
 import User from "../../components/User";
