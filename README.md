@@ -1,7 +1,7 @@
-This is my other social blog / chat app similar to PERN-chat but better because it uses Prisma, TailwindCSS and redis.
+This is my other social blog / chat app similar to PERN-chat but better because it uses Prisma, Redis, TailwindCSS, and Markdown.
 
 Features :
- - Paginate and filter by tags on the server side
+ - Search, paginate and filter by tags on the server side, performance assisted by Redis cache
  - Start a conversation with another user by clicking on their image
  - Like and share posts
  - View a users profile with their shares and likes

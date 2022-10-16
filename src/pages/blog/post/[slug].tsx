@@ -16,6 +16,8 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import axios, { AxiosError } from 'axios'
 
+import ReactMarkdown from 'react-markdown'
+
 export default function Post({ post }: { post: any }) {
   const [resMsg, setResMsg] = useState<IResponseMessage>({
     msg: '',
@@ -85,7 +87,9 @@ export default function Post({ post }: { post: any }) {
           <div className="py-2 mx-auto">
             <User userData={findUserData(post.author.id)} post={post} />
           </div>
-          <p className="mx-auto text-center">{post.content}</p>
+          <div className='prose-sm prose-a:text-indigo-500 prose-a:font-bold max-w-none'>
+          <ReactMarkdown children={post.content}/>
+          </div>
           <Comments inComments={post.comments} postId={post.id} />
         </div>
       )}
