@@ -81,7 +81,7 @@ export default function Comments({
         )
       })
     })
-    channel.bind('comment-updated', (data: any) => {
+    /*channel.bind('comment-updated', (data: any) => {
       setComments((old: IComment[]) => {
         let newComments = old
         const i = old.findIndex((comment: IComment) => comment.id === data.id)
@@ -105,7 +105,7 @@ export default function Comments({
             }
           return newComments
         })
-    })
+    })*/
     return () => pusher.unsubscribe(`post=${postId}`)
   }, [pusher])
 

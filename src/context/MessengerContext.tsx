@@ -23,7 +23,7 @@ const MessengerContext = createContext<
       messengerHeading: string
       notifications: number
       setNotifications: (to: number) => void
-      addMessage: (msg:string) => void
+      addMessage: (msg: string) => void
     }
   | any
 >(undefined)
@@ -46,7 +46,8 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       })
       .then(() => {
         setNotifications(
-          messages.filter((msg:any) => msg.senderId !== session?.uid).length -
+          (oldNotifications) =>
+            oldNotifications -
             messages.filter((msg: any) => msg.senderId === to).length,
         )
       })
@@ -64,7 +65,9 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       })
       const data = axres.data
         .sort((a: any, b: any) => {
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          )
         })
         .map((msg: any) => ({
           ...msg,
@@ -80,43 +83,34 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       console.error(e)
     }
   }
-  const addMessage = (msg:string) => {
-    console.log(msg)
-    setMessages(old => {
-      let newMsgs = old
-      newMsgs.push({
-        senderId:String(session?.uid),
-        message: msg,
-        createdAt: new Date(),
-        receiverRead:true,
-        id: msg+`${Date.now()}`
-      })
-      return newMsgs
-    })
+  const addMessage = (msg: string) => {
+    setMessages((old) => [...old, {
+      senderId: String(session?.uid),
+      message: msg,
+      createdAt: new Date(),
+      receiverRead: true,
+      id: msg + `${Date.now()}`,
+    }])
   }
 
   useEffect(() => {
     if (!pusher) return
     if (session) {
       getInboxMessages()
-      const channel = pusher.subscribe(`inbox=${session.uid}`)
+      const channel = pusher.subscribe(`private-inbox=${session.uid}`)
       channel.bind('message-added', (data: any) => {
-        setMessages((old) => {
-          let newMsgs = old
-          newMsgs.push({...data, createdAt: new Date(data.createdAt)})
-          return newMsgs
-        })
+        setMessages((old) => [...old, { ...data, createdAt: new Date(data.createdAt) }])
         if (
           !mState.showModal ||
           mState.modalType !== EModalType.Messages ||
           !subject ||
           subject !== data.senderId
         ) {
-          setNotifications((old) => old + 1)
+          setNotifications(notifications + 1)
         }
         cacheProfileDataForUser(data.senderId)
       })
-      return () => pusher.unsubscribe(`inbox=${session.uid}`)
+      return () => pusher.unsubscribe(`private-inbox=${session.uid}`)
     }
   }, [pusher, session])
 
@@ -129,7 +123,7 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
         messengerHeading,
         notifications,
         setNotifications,
-        addMessage
+        addMessage,
       }}
     >
       {children}

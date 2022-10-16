@@ -32,7 +32,7 @@ export default async function handler(
       } catch (e) {
         return res.status(400).json({ msg: "User does not exist" });
       }
-      await pusher.trigger(`inbox=${uid}`, "message-added", {
+      await pusher.trigger(`private-inbox=${uid}`, "message-added", {
         message,
         senderId: session.uid,
         createdAt: new Date().toISOString(),

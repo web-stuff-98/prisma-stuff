@@ -1,6 +1,6 @@
 import { MdSend } from 'react-icons/md'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import IResponseMessage from '../../interfaces/IResponseMessage'
 import axios, { AxiosError } from 'axios'
@@ -33,6 +33,7 @@ export default function Messenger() {
       })
       return newSubjectUsers
     })
+    msgsBtmRef.current?.scrollIntoView({behavior:"auto"})
   }, [messages])
   const renderSubjectUser = (userData: IUser) => {
     return (
@@ -40,6 +41,7 @@ export default function Messenger() {
         onClick={() => setSubject(userData.id)}
         className="w-full cursor-pointer flex items-center gap-1 text-xs h-8 py-1 my-0.5 pl-1"
       >
+        {userData && <>
         <div className="relative w-6 h-6 bg-stone-200 overflow-hidden border border-stone-300 justify-start rounded overflow-hidden">
           <Image
             src={userData.image}
@@ -49,6 +51,7 @@ export default function Messenger() {
           />
         </div>
         {userData.name}
+        </>}
       </div>
     )
   }
@@ -81,11 +84,14 @@ export default function Messenger() {
     }
   }
 
+  const msgsBtmRef = useRef<HTMLDivElement>(null)
   return (
     <div className="w-full h-full flex flex-col">
       {subject ? (
         <>
-          <div className="flex h-40 py-0.5 mt-0.5 flex-col grow w-full overflow-y-auto">
+          <div 
+          style={{marginTop:"1px"}}
+          className="flex h-40 py-0.5 flex-col grow w-full overflow-y-auto">
             {messages &&
               messages
                 .filter(
@@ -130,6 +136,7 @@ export default function Messenger() {
                     <div className="text-xs">{msg.message}</div>
                   </div>
                 ))}
+                <div ref={msgsBtmRef}/>
           </div>
           <form
             onSubmit={handleSubmitMessage}

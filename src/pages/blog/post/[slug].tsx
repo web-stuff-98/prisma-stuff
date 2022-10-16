@@ -88,7 +88,7 @@ export default function Post({ post }: { post: any }) {
           <div className='text-3xl mx-auto font-ArchivoBlack'>
               {resMsg.msg}
           </div>
-          <div className="flex items-end justify-start py-6 gap-2">
+          <div className="flex items-end justify-start py-6 px-4 gap-2">
             <div>
               <h1
                 style={{ lineHeight: '1' }}

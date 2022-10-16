@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const getConverseeName = (u: IUser) => (u ? u.name : '')
 
   return (
-    <div className="w-full h-full h-screen font-Archivo">
+    <div className="w-full h-full font-Archivo">
       <div className="w-full h-full">
         <div className="fixed top z-50 w-full dark:shadow-none">
           <Header />
