@@ -15,15 +15,15 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
-  try {
-    await PostValidateSchema.validate(req.body)
-  } catch (e:any) {
-    return res.status(400).json({msg:`${e}`.replace("ValidationError : ", "")})
-  }
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "POST" || req.method === "PATCH")
+    try {
+      await PostValidateSchema.validate(req.body);
+    } catch (e: any) {
+      return res
+        .status(400)
+        .json({ msg: `${e}`.replace("ValidationError : ", "") });
+    }
 
   const {
     title,
@@ -150,10 +150,10 @@ const handler = async (
       return res.status(400).json({ msg: "Post does not exist" });
     }
   }
-}
+};
 
 export default customRateLimit(handler, {
   numReqs: 12,
   exp: 21600,
-  key: 'editor-requests'
-})
+  key: "editor-requests",
+});
