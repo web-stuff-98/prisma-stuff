@@ -162,12 +162,13 @@ const Editor = ({ post }: { post: any }) => {
     setGenerating(true)
     await getRandomContent()
     await getRandomImage()
+    await formik.submitForm()
     setGenerating(false)
   }
   useEffect(() => {
     const geninterval = setInterval(async () => {
       if(!generating) await generateRandom()
-    }, 5000)
+    }, 10000)
     return () => clearInterval(geninterval)
   }, [])
 
