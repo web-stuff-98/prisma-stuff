@@ -8,6 +8,8 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
+    /* any tailwind classes that you using inside of ${} string interpolation you need to put here,
+    or the classes will be purged from tailwind when the static files are built */
     "text-lg",
     "font-bold",
     "pl-1",
@@ -44,6 +46,19 @@ module.exports = {
     "pt-1",
     "text-zinc-800",
     "dark:text-zinc-500",
+    {
+      pattern: /bg-(red|green|blue)-(100|200|300)/,
+      variants: [
+        "lg",
+        "sm",
+        "dark",
+        "hover",
+        "focus",
+        "dark:hover",
+        "sm:hover",
+        "md:hover",
+      ],
+    },
   ],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
