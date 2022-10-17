@@ -60,7 +60,7 @@ export default function Post({ post }: { post: any }) {
     <>
       {post && (
         <div className="flex flex-col justify-center my-1 p-3 w-full">
-          <div className="relative w-full mt-1 md:mb-6 rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
+          <div className="relative w-full mt-1 rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
             <Image
               objectFit="cover"
               objectPosition="absolute"
@@ -91,7 +91,7 @@ export default function Post({ post }: { post: any }) {
             </div>
           )}
           <div className="text-3xl mx-auto font-ArchivoBlack">{resMsg.msg}</div>
-          <div className="flex items-end justify-between py-6 sm:pt-1 px-4 sm:justify-center sm:items-center md:flex-row sm:flex-col gap-2">
+          <div className="flex items-end md:mt-6 justify-between py-6 sm:pt-1 px-4 sm:justify-center sm:items-center md:flex-row sm:flex-col gap-2">
             <div>
               <h1
                 style={{ lineHeight: '1' }}

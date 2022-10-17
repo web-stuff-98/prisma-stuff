@@ -7,7 +7,7 @@ Features :
  - Like and share posts
  - View a users profile with their shares and likes
  - Create, edit and delete blog posts
- - Delete your account and change your username
+ - Delete your account
  - Signin with Auth0 (tested with gmail, Next not configured with other user image providers)
  - Simple custom rate limiter using Redis for certain API routes
  - Comment on posts

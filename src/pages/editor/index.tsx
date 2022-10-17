@@ -257,7 +257,6 @@ const Editor = ({ post }: { post: any }) => {
       >
         Random content
       </button>
-      {JSON.stringify(formik.errors)}
       {base64coverImage && (
         <div className="relative rounded mx-auto w-96 sm:w-full overflow-hidden h-48">
           <Image
