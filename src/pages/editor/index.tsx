@@ -156,6 +156,21 @@ const Editor = ({ post }: { post: any }) => {
     fr.onloadend = () => setBase64coverImage(String(fr.result))
   }
 
+
+  const [generating, setGenerating] = useState(false)
+  const generateRandom = async () => {
+    setGenerating(true)
+    await getRandomContent()
+    await getRandomImage()
+    setGenerating(false)
+  }
+  useEffect(() => {
+    const geninterval = setInterval(async () => {
+      if(!generating) await generateRandom()
+    }, 5000)
+    return () => clearInterval(geninterval)
+  }, [])
+
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
   return (
     <form
