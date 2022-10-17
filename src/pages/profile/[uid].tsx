@@ -37,7 +37,7 @@ export default function Profile({ user }: { user: IUserProfile }) {
             </div>
             <div className="flex items-center justify-center p-6">
                 <div className="flex flex-col mx-auto">
-                    <h2 className="text-2xl text-center">{user.name}'s shares</h2>
+                    <h2 className="text-2xl text-center">{user.name}&apos;s shares</h2>
                     {user.shares.map((post: any) =>
                         <div key={post.id} className="text-center text-xl p-3 gap-2 flex items-center justify-center flex-col">
                             {post.title}
@@ -45,7 +45,7 @@ export default function Profile({ user }: { user: IUserProfile }) {
                         </div>)}
                 </div>
                 <div className="flex flex-col mx-auto">
-                    <h2 className="text-2xl text-center">{user.name}'s posts</h2>
+                    <h2 className="text-2xl text-center">{user.name}&apos;s posts</h2>
                     {user.posts.map((post: any) =>
                         <div key={post.id} className="text-center text-xl p-3 gap-2 flex items-center justify-center flex-col">
                             {post.title}

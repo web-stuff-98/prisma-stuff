@@ -99,7 +99,10 @@ export default function Post({ post }: { post: any }) {
               >
                 {post.title}
               </h1>
-              <p style={{ lineHeight: '1' }} className="text-sm sm:text-center md:text-left">
+              <p
+                style={{ lineHeight: '1' }}
+                className="text-sm sm:text-center md:text-left"
+              >
                 {post.description}
               </p>
             </div>
@@ -137,7 +140,7 @@ export default function Post({ post }: { post: any }) {
             prose-a:font-bold
             max-w-none"
           >
-            <ReactMarkdown children={post.content} />
+            <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
           <Comments inComments={post.comments} postId={post.id} />
         </div>
