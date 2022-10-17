@@ -151,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const { tags: rawTags } = query
   const { term: rawTerm } = query
   const clientQueryInput:any = {
-    pageOffset: Number(Math.max(Number(params?.page), 0) * 20),
+    pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
     ...(rawTags
       ? {
           tags: rawTags

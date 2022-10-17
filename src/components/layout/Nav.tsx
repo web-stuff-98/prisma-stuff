@@ -16,6 +16,7 @@ import { EModalType } from '../../context/ModalContext'
 import { useDarkMode } from '../../pages/_app'
 import { useMessenger } from '../../context/MessengerContext'
 import { useFilter } from '../../context/FilterContext'
+import { useRouter } from 'next/router'
 
 export default function Nav() {
   const { data: session, status } = useSession()
@@ -23,6 +24,7 @@ export default function Nav() {
   const { darkMode, setDarkMode } = useDarkMode()
   const { notifications } = useMessenger()
   const { searchTerm, setSearchTerm, searchOpen, setSearchOpen } = useFilter()
+  const { pathname } = useRouter()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -79,7 +81,7 @@ export default function Nav() {
                 navInnerRef.current?.classList.toggle('items-center')
                 navInnerRef.current?.classList.toggle('items-end')
                 menuIconRef.current?.classList.toggle('mb-4')
-                searchRef.current?.classList.toggle('sm:hidden')
+                searchRef.current && searchRef.current?.classList.toggle('sm:hidden')
                 darkModeRef.current?.classList.toggle('sm:hidden')
                 settingsRef.current?.classList.toggle('sm:hidden')
                 chatRef.current?.classList.toggle('sm:hidden')
@@ -139,7 +141,7 @@ export default function Nav() {
               </div>
             )}
           </div>
-          <div
+          {pathname.includes("/blog/page") && <div
             ref={searchRef}
             onClick={() => {
               if (!searchOpen) {
@@ -170,7 +172,7 @@ export default function Nav() {
                 className="bg-transparent focus:outline-none text-xs border-b h-full text-white border-white"
               />
             )}
-          </div>
+          </div>}
         </div>
       </div>
     </nav>
