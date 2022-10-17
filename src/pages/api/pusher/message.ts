@@ -4,6 +4,8 @@ import pusher from "../../../utils/pusher";
 
 import { customRateLimit } from "../../../utils/redisRateLimit";
 
+import prisma from "../../../utils/prisma"
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST" && req.method !== "GET")
     return res.status(405).end();
