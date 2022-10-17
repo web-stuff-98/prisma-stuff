@@ -52,9 +52,9 @@ export default function Post({
       >
         <h3
           style={{ lineHeight: '0.866' }}
-          className={`font-Archivo sm:text-sm md:text-xl sm:mx-auto md:mx-0 sm:py-1 sm:text-center ${
+          className={`font-Archivo sm:text-sm md:text-lg sm:mx-auto md:mx-0 sm:py-1 sm:text-center ${
             reverse ? 'md:text-right' : 'md:text-left'
-          } font-black md:pb-1`}
+          } font-black`}
         >
           {post.title}
         </h3>

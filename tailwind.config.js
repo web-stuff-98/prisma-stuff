@@ -53,6 +53,7 @@ module.exports = {
     "md:text-left",
     "md:justify-end",
     "md:justify-start",
+    "md:mb-6",
   ],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",

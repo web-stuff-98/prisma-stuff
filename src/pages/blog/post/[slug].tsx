@@ -60,7 +60,7 @@ export default function Post({ post }: { post: any }) {
     <>
       {post && (
         <div className="flex flex-col justify-center my-1 p-3 w-full">
-          <div className="relative w-full mt-1 rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
+          <div className="relative w-full mt-1 md:mb-6 rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
             <Image
               objectFit="cover"
               objectPosition="absolute"

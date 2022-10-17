@@ -1,6 +1,4 @@
-import type {
-  GetServerSideProps,
-} from 'next'
+import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import { useRef } from 'react'
 import Post, { IPost } from '../../../components/post/Post'
@@ -117,32 +115,34 @@ export const getServerSideProps: GetServerSideProps = async ({
   if (cachedPopularPosts) {
     popular = JSON.parse(cachedPopularPosts)
   } else {
-    popular = JSON.parse(JSON.stringify({
-      popular: await prisma.post.findMany({
-        where: {
-          published: true,
-          imagePending: false,
-        },
-        select: {
-          title: true,
-          description: true,
-          id: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
+    popular = JSON.parse(
+      JSON.stringify({
+        popular: await prisma.post.findMany({
+          where: {
+            published: true,
+            imagePending: false,
+          },
+          select: {
+            title: true,
+            description: true,
+            id: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            slug: true,
+          },
+          orderBy: {
+            likes: {
+              _count: 'desc',
             },
           },
-          slug: true,
-        },
-        orderBy: {
-          likes: {
-            _count: 'desc',
-          },
-        },
-        take: 8,
+          take: 8,
+        }),
       }),
-    }))
+    )
     const expiration: number = process.env.NODE_ENV === 'development' ? 5 : 120
     await redisClient?.setEx('popular', expiration, JSON.stringify(popular))
   }
@@ -150,32 +150,34 @@ export const getServerSideProps: GetServerSideProps = async ({
   /* The users parsed query parameters. Stored as keyname on redis so cached props can be looked up */
   const { tags: rawTags } = query
   const { term: rawTerm } = query
-  const clientQueryInput = rawTags
-    ? {
-        tags: rawTags
-          ? String(rawTags)
-              .toLowerCase()
-              .split(' ')
-              .filter((tag: string) => tag.trim() !== '')
-              .map((tag: string) => tag.replace(/[^\w-]+/g, ''))
-          : [],
-        pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
-      }
-    : rawTerm
-    ? {
-        term: String(rawTerm)
-          .toLowerCase()
-          .trim()
-          .replaceAll('+', ' ')
-          .replace(/[^\w-]+/g, ''),
-        pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
-      }
-    : {}
+  const clientQueryInput:any = {
+    pageOffset: Number(Math.max(Number(params?.page), 0) * 20),
+    ...(rawTags
+      ? {
+          tags: rawTags
+            ? String(rawTags)
+                .toLowerCase()
+                .split(' ')
+                .filter((tag: string) => tag.trim() !== '')
+                .map((tag: string) => tag.replace(/[^\w-]+/g, ''))
+            : [],
+        }
+      : rawTerm
+      ? {
+          term: String(rawTerm)
+            .toLowerCase()
+            .trim()
+            .replaceAll('+', ' ')
+            .replace(/[^\w-]+/g, ''),
+        }
+      : {}),
+  }
+
   const cachedProps = await redisClient?.get(JSON.stringify(clientQueryInput))
   if (cachedProps) {
     await redisClient?.disconnect()
     return {
-      props: {...JSON.parse(cachedProps), ...popular},
+      props: { ...JSON.parse(cachedProps), ...popular },
     }
   }
 
@@ -200,16 +202,16 @@ export const getServerSideProps: GetServerSideProps = async ({
       ...where,
     },
     select: {
-      id:true,
-      authorId:true,
-      title:true,
-      description:true,
-      tags:true,
-      createdAt:true,
-      author: { select: { id:true}},
+      id: true,
+      authorId: true,
+      title: true,
+      description: true,
+      tags: true,
+      createdAt: true,
+      author: { select: { id: true } },
       likes: true,
-      shares:true,
-      slug:true
+      shares: true,
+      slug: true,
     },
     orderBy: { createdAt: 'desc' },
     skip: clientQueryInput.pageOffset,
@@ -259,7 +261,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     pageCount: feedQ.length,
     fullCount: feedQ_count.length,
     maxPage: Math.ceil(feedQ_count.length / 20),
-    ...popular
+    ...popular,
   }
 
   const key = JSON.stringify(clientQueryInput)
