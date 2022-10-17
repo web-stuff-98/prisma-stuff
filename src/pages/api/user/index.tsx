@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 
+import prisma from '../../../utils/prisma'
+
 export default async function User(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET' && req.method !== 'DELETE')
     return res.status(405).end()
