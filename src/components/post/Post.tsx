@@ -15,6 +15,7 @@ export type IPost = {
   likes: string[]
   comments: number
   createdAt: string
+  blur:string
 }
 
 export default function Post({
@@ -39,6 +40,8 @@ export default function Post({
             layout="fill"
             objectFit="cover"
             objectPosition="absolute"
+            blurDataURL={post.blur}
+            placeholder="blur"
             src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${
               process.env.NODE_ENV === 'development' ? '/dev' : ''
             }/${post.id}`}

@@ -212,6 +212,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       likes: true,
       shares: true,
       slug: true,
+      blur:true
     },
     orderBy: { createdAt: 'desc' },
     skip: clientQueryInput.pageOffset,
