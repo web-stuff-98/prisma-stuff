@@ -57,7 +57,7 @@ export default function Nav() {
             ref={navlinksRef}
             className="gap-6 flex my-auto sm:hidden sm:flex-col md:flex md:flex-row md:text-md md:text-white sm:text-white"
           >
-            <Link href="/about">About</Link>
+            <Link href="/">Home</Link>
             <Link href="/blog/page/1">Blog</Link>
             {status === 'authenticated' && <Link href="/editor">Editor</Link>}
             {status === 'unauthenticated' && (
