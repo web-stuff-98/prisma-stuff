@@ -14,10 +14,11 @@ import { useSession } from 'next-auth/react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 export default function Messenger() {
-  const { subject, setSubject, messages, addMessage } = useMessenger()
+  const { subject, setSubject, messages, addMessage, getUserUnreadMsgCount } = useMessenger()
   const { findUserData } = useUsers()
   const { data: session } = useSession()
 
+  const msgsBtmRef = useRef<HTMLDivElement>(null)
   const [subjectUsers, setSubjectUsers] = useState<string[]>([])
   useEffect(() => {
     if (!messages) return
@@ -33,25 +34,36 @@ export default function Messenger() {
       })
       return newSubjectUsers
     })
-    msgsBtmRef.current?.scrollIntoView({behavior:"auto"})
+    msgsBtmRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messages])
-  const renderSubjectUser = (userData: IUser) => {
+
+  useEffect(() => {
+    if(!msgsBtmRef.current) return
+    msgsBtmRef.current.scrollIntoView({behavior:"auto"})
+  }, [msgsBtmRef.current])
+
+  const renderSubjectUser = (userData: IUser, notifications: number, key:string) => {
     return (
-      <div
+      <div key={key}
         onClick={() => setSubject(userData.id)}
         className="w-full cursor-pointer flex items-center gap-1 text-xs h-8 py-1 my-0.5 pl-1"
       >
-        {userData && <>
-        <div className="relative w-6 h-6 bg-stone-200 overflow-hidden border border-stone-300 justify-start rounded overflow-hidden">
-          <Image
-            src={userData.image}
-            objectFit="cover"
-            objectPosition="absolute"
-            layout="fill"
-          />
-        </div>
-        {userData.name}
-        </>}
+        {userData && (
+          <>
+            <div className="relative w-6 h-6 bg-stone-200 overflow-hidden border border-stone-300 justify-start rounded overflow-hidden">
+              <Image
+                src={userData.image}
+                objectFit="cover"
+                objectPosition="absolute"
+                layout="fill"
+              />
+            </div>
+            {userData.name}{' '}
+            {notifications > 0 && (
+              <b className="text-green-300 text-lg">+ {notifications}</b>
+            )}
+          </>
+        )}
       </div>
     )
   }
@@ -74,7 +86,7 @@ export default function Messenger() {
         data: { message, uid: subject },
       })
       addMessage(message)
-    } catch (e:AxiosError | any) {
+    } catch (e: AxiosError | any) {
       e.response
         ? //@ts-ignore-error
           has(e.response, 'data')
@@ -84,14 +96,14 @@ export default function Messenger() {
     }
   }
 
-  const msgsBtmRef = useRef<HTMLDivElement>(null)
   return (
     <div className="w-full h-full flex flex-col">
       {subject ? (
         <>
-          <div 
-          style={{marginTop:"1px"}}
-          className="flex h-40 py-0.5 flex-col grow w-full overflow-y-auto">
+          <div
+            style={{ marginTop: '1px' }}
+            className="flex h-40 py-0.5 flex-col grow w-full overflow-y-auto"
+          >
             {messages &&
               messages
                 .filter(
@@ -122,7 +134,7 @@ export default function Messenger() {
                         <div
                           style={{ lineHeight: '0.866', fontSize: '0.7rem' }}
                         >
-                          {msg.createdAt.getDay()}/{msg.createdAt.getMonth()}/
+                          {msg.createdAt.getDate()}/{msg.createdAt.getMonth()}/
                           {`${msg.createdAt.getFullYear()}`.slice(2, 4)}
                         </div>
                         <div
@@ -136,7 +148,7 @@ export default function Messenger() {
                     <div className="text-xs">{msg.message}</div>
                   </div>
                 ))}
-                <div ref={msgsBtmRef}/>
+            <div ref={msgsBtmRef} />
           </div>
           <form
             onSubmit={handleSubmitMessage}
@@ -161,7 +173,7 @@ export default function Messenger() {
           <div className="grow w-full">
             {subjectUsers.length > 0 ? (
               subjectUsers.map((uid: string) =>
-                renderSubjectUser(findUserData(uid)),
+                renderSubjectUser(findUserData(uid), getUserUnreadMsgCount(uid), uid),
               )
             ) : (
               <div className="p-4 text-center my-auto text-md font-bold">

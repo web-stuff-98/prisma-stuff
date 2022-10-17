@@ -4,7 +4,7 @@ import redisClient from "./redis";
 import getIP from "./getIp";
 
 /**
- * really basic rate limiter middleware made using redis.
+ * my really basic rate limiter middleware made using redis.
  * cannot use it on next-auth route ...
  * 
  * Wrap it over your api handler. need to find out how to

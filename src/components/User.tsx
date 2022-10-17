@@ -19,6 +19,7 @@ export default function User({
   reverse = false,
   large = false,
   date = undefined,
+  smallDate = false,
 }: {
   post?: IPost
   userData: IUser
@@ -26,6 +27,7 @@ export default function User({
   reverse?: boolean
   large?: boolean
   date?: Date
+  smallDate?: boolean
 }) {
   const [clickedShared, setClickedShared] = useState(false)
   const [clickedLiked, setClickedLiked] = useState(false)
@@ -116,16 +118,45 @@ export default function User({
               })
             }}
             className={`bg-stone-500 ${
-              large ? 'h-10 w-10' : 'h-7 w-7'
+              large ? 'h-10 w-10' : 'h-8 w-8'
             } cursor-pointer overflow-hidden shadow rounded-full relative`}
           >
             <Image layout="fill" src={userData.image} />
           </div>
-          <span style={{lineHeight:"1"}} className={`${large ? 'text-lg font-bold pl-1' : 'text-xs'}`}>
-            {post ? `by ${userData.name}` : userData.name}
-            {<div style={{lineHeight:"1"}} className='text-xs font-normal'>
-            {date && `created ${date?.toDateString()}`}
-            </div>}
+          <span
+            style={{ lineHeight: '1', textAlign: reverse ? 'right' : 'left' }}
+            className={`${large ? 'text-lg font-bold pl-1' : 'text-xs'}`}
+          >
+            <div className={smallDate ? "font-bold pb-0.5" : "font-bold"}>
+              {post ? `by ${userData.name}` : userData.name}
+            </div>
+            {
+              <div
+                style={{
+                  lineHeight: '0.875',
+                  ...(smallDate ? { fontSize: '0.7rem' } : {}),
+                }}
+                className="text-xs font-normal"
+              >
+                {smallDate && (
+                  <>
+                    {date &&
+                      (smallDate
+                        ? `${date.getDate()}/${('0' + date.getMonth()).slice(
+                            -2,
+                          )}/${date.getFullYear()}`
+                        : `created ${date?.toDateString()}`)}
+                    <br />
+                  </>
+                )}
+                {date &&
+                  (smallDate
+                    ? `${('0' + date.getHours()).slice(-2)}:${(
+                        '0' + date.getMinutes()
+                      ).slice(-2)}:${('0' + date.getSeconds()).slice(-2)}`
+                    : `created ${date?.toDateString()}`)}
+              </div>
+            }
           </span>
         </>
       )}

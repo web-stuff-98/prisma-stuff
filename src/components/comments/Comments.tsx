@@ -49,7 +49,11 @@ export default function Comments({
     if (!pusher) return
     const channel = pusher.subscribe(`post=${postId}`)
     channel.bind('comment-added', (data: any) => {
-      setComments((old) => [...old, { ...data, replies: 0 }])
+      setComments((old) => {
+        let newCmts = old
+        newCmts.push({ ...data, replies: 0 })
+        return newCmts
+      })
       cacheProfileDataForUser(data.userId)
     })
     channel.bind('comment-on-comment-added', (data: any) => {
@@ -69,7 +73,6 @@ export default function Comments({
         const matchingComment = old.find(
           (comment: IComment) => comment.id === data.commentThreadId,
         )
-        //have to use filter here because the state was not updating properly with spread operators, react state is weird
         return [
           ...old.filter(
             (comment: IComment) => comment.id !== data.commentThreadId,
@@ -126,7 +129,7 @@ export default function Comments({
         },
       })
       setResMsg({ msg: '', err: false, pen: false })
-    } catch (e:AxiosError | any) {
+    } catch (e: AxiosError | any) {
       e.response
         ? //@ts-ignore-error
           has(e.response, 'data')
@@ -147,7 +150,7 @@ export default function Comments({
         url: `/api/post/comment?commentThreadId=${commentThreadId}`,
       })
       setCommentThread(axres.data)
-    } catch (e:AxiosError | any) {
+    } catch (e: AxiosError | any) {
       e.response
         ? //@ts-ignore-error
           has(e.response, 'data')

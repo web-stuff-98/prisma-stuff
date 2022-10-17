@@ -14,6 +14,8 @@ import ProgressBar from '../../components/progressBar/ProgressBar'
 
 import has from 'lodash/has'
 
+import PostValidateSchema from "../../utils/yup/PostValidateSchema"
+
 const Editor = ({ post }: { post: any }) => {
   const [resMsg, setResMsg] = useState<IResponseMessage>({
     msg: '',
@@ -45,6 +47,7 @@ const Editor = ({ post }: { post: any }) => {
       content: '',
       tags: '',
     },
+    validationSchema: PostValidateSchema,
     onSubmit: async (values) => {
       try {
         setProgress(0)
@@ -113,6 +116,26 @@ const Editor = ({ post }: { post: any }) => {
       const bufferString = Buffer.from(axres.data, 'binary').toString('base64')
       const base64 = `data:image/jpeg;base64, ${bufferString}`
       setBase64coverImage(base64)
+    } catch (e:AxiosError | any) {
+      e.response
+        ? //@ts-ignore-error
+          has(e.response, 'data')
+          ? setResMsg({ msg: e.response.data.msg, err: true, pen: false })
+          : setResMsg({ msg: `${e}`, pen: false, err: true })
+        : setResMsg({ msg: `${e}`, pen: false, err: true })
+    }
+  }
+
+  const getRandomContent = async () => {
+    try {
+      const axres = await axios({
+        method: 'GET',
+        url:"/api/post/random"
+      })
+      formik.setFieldValue('title', axres.data.title)
+      formik.setFieldValue('description', axres.data.description)
+      formik.setFieldValue('content', axres.data.content)
+      formik.setFieldValue('tags', axres.data.tags)
     } catch (e:AxiosError | any) {
       e.response
         ? //@ts-ignore-error
@@ -227,13 +250,20 @@ const Editor = ({ post }: { post: any }) => {
       >
         Random image
       </button>
+      <button
+        onClick={() => getRandomContent()}
+        type="button"
+        className="bg-white dark:bg-zinc-800 dark:border-zinc-700 shadow rounded-sm border"
+      >
+        Random content
+      </button>
+      {JSON.stringify(formik.errors)}
       {base64coverImage && (
-        <div className="relative rounded mx-auto w-96 h-48">
+        <div className="relative rounded mx-auto w-96 sm:w-full overflow-hidden h-48">
           <Image
             src={base64coverImage}
             objectPosition="absolute"
             objectFit="contain"
-            className="m-1 shadow-lg rounded"
             layout="fill"
           />
         </div>

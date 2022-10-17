@@ -28,12 +28,12 @@ export default function Profile({ user }: { user: IUserProfile }) {
     }, [user.shares])
 
     return (
-        <div className="container mx-auto p-3 flex flex-col justify-center">
+        <div className="p-3 flex flex-col justify-center">
             <div className="flex flex-col text-sm items-center justify-center">
                 <div className="mx-auto mt-2 flex items-center">
                     <User date={new Date(user.createdAt)} large={true} userData={findUserData(user.id)}/>
                 </div>
-                <hr className="w-full my-3 border-neutral-200 dark:border-zinc-800"/>
+                <hr className="w-full my-3 border-dashed border-neutral-200 dark:border-zinc-800"/>
             </div>
             <div className="flex items-center justify-center p-6">
                 <div className="flex flex-col mx-auto">

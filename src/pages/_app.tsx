@@ -16,7 +16,7 @@ import { MessengerProvider } from '../context/MessengerContext'
 
 import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
-import { AuthGuard } from '../utils/PageGuard'
+import { AuthGuard } from '../utils/authGuard'
 
 interface IDarkModeCtx {
   darkMode: boolean

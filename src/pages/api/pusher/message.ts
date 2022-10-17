@@ -1,12 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import pusher from "../../../utils/pusher";
+
 import { customRateLimit } from "../../../utils/redisRateLimit";
 
-async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST" && req.method !== "GET")
     return res.status(405).end();
 
@@ -14,19 +12,33 @@ async function handler(
   if (!session) return res.status(403).json({ msg: "Unauthorized" });
 
   const { message, uid } = req.body;
-  if (req.method === "POST")
+  const { readByUserId } = req.query;
+  if (req.method === "POST" && !readByUserId)
     if (!message || message.trim() === "")
       return res.status(400).json({ msg: "Cannot submit an empty message" });
 
   try {
     if (req.method === "POST") {
-      const { readByUserId } = req.query;
-      if (req.query.readId) {
+      if (typeof readByUserId === "string") {
         await prisma.message.updateMany({
           where: { senderId: String(readByUserId) },
           data: { receiverRead: true },
         });
-        return res.status(200).end();
+        const msgs: any[] = await prisma.message.findMany({
+          where: { receiverId: session.uid },
+        });
+        let newNotifications = 0;
+        msgs.forEach((msg: any) => {
+          if (
+            msg.senderId !== readByUserId &&
+            msg.senderId !== session.uid &&
+            !msg.receiverRead
+          )
+            newNotifications++;
+        });
+        return res
+          .status(200)
+          .json({ msgs: JSON.stringify(msgs), newNotifications });
       }
       try {
         await prisma.user.findUniqueOrThrow({ where: { id: uid } });
@@ -67,12 +79,12 @@ async function handler(
         ]);
     }
   } catch (e) {
-    return res.status(400).json({ message: `${e}` });
+    return res.status(400).json({ msg: `${e}` });
   }
 }
 
 export default customRateLimit(handler, {
   numReqs: 12,
   exp: 12,
-  key: 'message-requests'
-})
+  key: "message-requests",
+});

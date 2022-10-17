@@ -23,10 +23,13 @@ module.exports = {
         ArchivoBlack: ["Archivo Black", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        darkBackground: "rgb(23,23,26)",
+        darkBackground: "rgb(22,22,22)",
       },
       height: {
         postHeight: "13.666em",
+      },
+      maxHeight: {
+        asideMaxHeight: "calc(100vh - 8rem)",
       },
       minWidth: {
         postWidth: "15em",

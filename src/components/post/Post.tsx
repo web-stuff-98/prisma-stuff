@@ -51,7 +51,7 @@ export default function Post({
         } mx-auto grow p-1`}
       >
         <h3
-          style={{ lineHeight: '1' }}
+          style={{ lineHeight: '0.866' }}
           className={`font-Archivo sm:text-sm md:text-xl sm:mx-auto md:mx-0 sm:text-center ${
             reverse ? 'md:text-right' : 'md:text-left'
           } font-black md:pb-1`}
@@ -59,7 +59,7 @@ export default function Post({
           {post.title}
         </h3>
         <p
-          style={{ lineHeight: '1' }}
+          style={{ lineHeight: '0.95' }}
           className={`sm:text-center sm:text-xs sm:mx-auto md:mx-0 text-sm ${
             reverse ? 'md:text-right' : 'md:text-left'
           }`}

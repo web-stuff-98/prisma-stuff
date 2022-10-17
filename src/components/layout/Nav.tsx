@@ -39,7 +39,7 @@ export default function Nav() {
     <nav
       ref={navRef}
       style={{ transition: 'height 100ms linear, padding 100ms linear' }}
-      className="font-black px-1 h-6 md:px-2 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-neutral-900 md:bg-white dark:md:bg-zinc-900 dark:md:border-b md:border-b md:border-neutral-200 dark:sm:border-b dark:border-zinc-800 h-full"
+      className="font-black px-1 h-6 md:px-2 flex sm:w-full sm:pl-0.5 sm:pr-0.5 sm:bg-neutral-900 dark:sm:bg-neutral-900 md:bg-neutral-800 dark:md:bg-neutral-900 dark:md:border-b md:border-b md:border-neutral-800 md:text-white dark:sm:border-b dark:border-zinc-800 h-full"
     >
       <div
         ref={navInnerRef}
@@ -55,7 +55,7 @@ export default function Nav() {
           {/* Navlinks / Hamburger Icon */}
           <div
             ref={navlinksRef}
-            className="gap-6 flex my-auto sm:hidden sm:flex-col md:flex md:flex-row md:text-md md:text-black sm:text-white dark:md:text-white"
+            className="gap-6 flex my-auto sm:hidden sm:flex-col md:flex md:flex-row md:text-md md:text-white sm:text-white"
           >
             <Link href="/about">About</Link>
             <Link href="/blog/page/1">Blog</Link>
@@ -126,7 +126,7 @@ export default function Nav() {
             onClick={() =>
               mDispatch({ showModal: true, modalType: EModalType.Messages })
             }
-            className="flex justify-center items-center bg-amber-700 rounded cursor-pointer relative"
+            className="flex justify-center items-center border bg-slate-900 rounded cursor-pointer relative"
           >
             <IoChatboxSharp className="text-white w-5 h-full p-0.5" />
             {/* notifications */}
@@ -147,7 +147,7 @@ export default function Nav() {
               }
             }}
             className={
-              'bg-amber-700 sm:flex flex items-center cursor-pointer rounded ' +
+              'bg-slate-900 border sm:flex flex items-center cursor-pointer rounded ' +
               (searchOpen && ' pr-1.5')
             }
           >

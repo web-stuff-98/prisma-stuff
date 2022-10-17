@@ -20,37 +20,47 @@ const MessengerContext = createContext<
       messages: IMessage[]
       subject: string
       setSubject: (to: string) => void
-      messengerHeading: string
       notifications: number
       setNotifications: (to: number) => void
       addMessage: (msg: string) => void
+      getUserUnreadMsgCount: (uid: string) => void
     }
   | any
->(undefined)
+>({
+  messages: [],
+  subject: '',
+  setSubject: (to: string) => {},
+  notifications: 0,
+  setNotifications: (to: number) => {},
+  addMessage: (msg: string) => {},
+  getUserUnreadMsgCount: (uid: string) => {},
+})
 
 export const MessengerProvider = ({ children }: { children: ReactNode }) => {
   const { state: mState } = useModal()
   const [messages, setMessages] = useState<IMessage[]>([])
   const [notifications, setNotifications] = useState(0)
   const [subject, setSubjectState] = useState('')
-  const [messengerHeading, setMessengerHeading] = useState('hello')
 
   const setSubject = (to: string) => {
     setSubjectState(to)
-    axios({
-      method: 'POST',
-      url: `/api/pusher/message?readByUserId=${to}`,
-    })
-      .catch((e) => {
-        console.error(e)
+    if (to)
+      axios({
+        method: 'POST',
+        url: `/api/pusher/message?readByUserId=${to}`,
       })
-      .then(() => {
-        setNotifications(
-          (oldNotifications) =>
-            oldNotifications -
-            messages.filter((msg: any) => msg.senderId === to).length,
-        )
-      })
+        .catch((e) => {
+          console.error(e)
+        })
+        .then((res: any) => {
+          setNotifications(res.data.newNotifications)
+          setMessages(
+            JSON.parse(res.data.msgs).map((msg: any) => ({
+              ...msg,
+              createdAt: new Date(msg.createdAt),
+            })),
+          )
+        })
   }
 
   const { pusher } = usePusher()
@@ -83,14 +93,29 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       console.error(e)
     }
   }
+
+  useEffect(() => {
+    if (!mState.showModal) setSubject('')
+  }, [mState.showModal])
+
   const addMessage = (msg: string) => {
-    setMessages((old) => [...old, {
-      senderId: String(session?.uid),
-      message: msg,
-      createdAt: new Date(),
-      receiverRead: true,
-      id: msg + `${Date.now()}`,
-    }])
+    setMessages((old) => [
+      ...old,
+      {
+        senderId: String(session?.uid),
+        message: msg,
+        createdAt: new Date(),
+        receiverRead: true,
+        id: msg + `${Date.now()}`,
+      },
+    ])
+  }
+  const getUserUnreadMsgCount = (uid: string) => {
+    let count = 0
+    for (let message of messages) {
+      if (uid === message.senderId && !message.receiverRead) count++
+    }
+    return count
   }
 
   useEffect(() => {
@@ -99,14 +124,17 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
       getInboxMessages()
       const channel = pusher.subscribe(`private-inbox=${session.uid}`)
       channel.bind('message-added', (data: any) => {
-        setMessages((old) => [...old, { ...data, createdAt: new Date(data.createdAt) }])
+        setMessages((old) => [
+          ...old,
+          { ...data, createdAt: new Date(data.createdAt) },
+        ])
         if (
           !mState.showModal ||
           mState.modalType !== EModalType.Messages ||
           !subject ||
           subject !== data.senderId
         ) {
-          setNotifications(notifications + 1)
+          setNotifications((old: number) => old + 1)
         }
         cacheProfileDataForUser(data.senderId)
       })
@@ -120,10 +148,10 @@ export const MessengerProvider = ({ children }: { children: ReactNode }) => {
         messages,
         subject,
         setSubject,
-        messengerHeading,
         notifications,
         setNotifications,
         addMessage,
+        getUserUnreadMsgCount,
       }}
     >
       {children}

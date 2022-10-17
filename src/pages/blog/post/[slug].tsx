@@ -1,4 +1,9 @@
-import { GetServerSidePropsContext } from 'next'
+import {
+  GetServerSidePropsContext,
+  GetStaticPaths,
+  GetStaticProps,
+  GetStaticPropsContext,
+} from 'next'
 import prisma from '../../../utils/prisma'
 
 import Image from 'next/image'
@@ -31,12 +36,12 @@ export default function Post({ post }: { post: any }) {
 
   const deletePost = async () => {
     try {
-      setResMsg({msg:"", err:false, pen:true})
+      setResMsg({ msg: '', err: false, pen: true })
       await axios({
         method: 'DELETE',
         url: `/api/post?id=${post.id}`,
       })
-      setResMsg({msg:"Post deleted", err:false, pen:false})
+      setResMsg({ msg: 'Post deleted', err: false, pen: false })
     } catch (e:AxiosError | any) {
       e.response
         ? //@ts-ignore-error
@@ -55,7 +60,7 @@ export default function Post({ post }: { post: any }) {
     <>
       {post && (
         <div className="flex flex-col justify-center my-1 p-3 w-full">
-          <div className="relative w-full rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
+          <div className="relative w-full mt-1 rounded overflow-hidden border border-black dark:border-zinc-600 h-60">
             <Image
               objectFit="cover"
               objectPosition="absolute"
@@ -85,27 +90,27 @@ export default function Post({ post }: { post: any }) {
               </div>
             </div>
           )}
-          <div className='text-3xl mx-auto font-ArchivoBlack'>
-              {resMsg.msg}
-          </div>
-          <div className="flex items-end justify-start py-6 px-4 gap-2">
+          <div className="text-3xl mx-auto font-ArchivoBlack">{resMsg.msg}</div>
+          <div className="flex items-end justify-between py-6 sm:pt-1 px-4 sm:justify-center sm:items-center md:flex-row sm:flex-col gap-2">
             <div>
               <h1
                 style={{ lineHeight: '1' }}
-                className="text-lg text-left my-1 font-ArchivoBlack"
+                className="text-lg md:text-left sm:text-center my-1 font-ArchivoBlack"
               >
                 {post.title}
               </h1>
-              <p
-                style={{ lineHeight: '1' }}
-                className="text-sm text-left"
-              >
+              <p style={{ lineHeight: '1' }} className="text-sm sm:text-center md:text-left">
                 {post.description}
               </p>
             </div>
-              <User date={new Date(String(post.createdAt))} userData={findUserData(post.author.id)} post={post} />
+            <User
+              date={new Date(String(post.createdAt))}
+              userData={findUserData(post.author.id)}
+              post={post}
+              reverse={true}
+            />
           </div>
-          <hr className="border-zinc-100 dark:border-zinc-800" />
+          <hr className="border-zinc-200 dark:border-zinc-800 border-dashed" />
           <div
             style={{ lineHeight: '1.166' }}
             className="
@@ -141,6 +146,51 @@ export default function Post({ post }: { post: any }) {
   )
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext) => {
+  const post = await prisma.post.findUnique({
+    where: {
+      slug: String(params?.slug),
+    },
+    include: {
+      author: {
+        select: { name: true, image: true, id: true },
+      },
+      comments: true,
+      shares: true,
+      likes: true,
+    },
+  })
+  let out = JSON.parse(JSON.stringify(post))
+  if (has(out, 'comments'))
+    out.comments = await Promise.all(
+      out.comments.map((comment: CommentOnPost) => {
+        return new Promise((resolve, reject) => {
+          prisma.commentOnPostComment
+            .findMany({ where: { commentedOnId: comment.id } })
+            .then((res: CommentOnPostComment[]) => {
+              resolve({ ...comment, replies: res.length })
+            })
+            .catch((e) => reject(e))
+        })
+      }),
+    )
+  return {
+    props: { post: out },
+    revalidate: 30,
+  }
+}
+
+/*
+
 export const getServerSideProps = async ({
   params,
 }: GetServerSidePropsContext) => {
@@ -175,3 +225,5 @@ export const getServerSideProps = async ({
     props: { post: out },
   }
 }
+
+*/

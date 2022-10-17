@@ -7,6 +7,7 @@ import cloudinary from "cloudinary";
 import { nanoid } from "nanoid/async";
 import imageProcessing from "../../../utils/imageProcessing";
 import { customRateLimit } from "../../../utils/redisRateLimit";
+import PostValidateSchema from "../../../utils/yup/PostValidateSchema";
 
 cloudinary.v2.config({
   cloud_name: "dzpzb3uzn",
@@ -18,6 +19,12 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
+  try {
+    await PostValidateSchema.validate(req.body)
+  } catch (e:any) {
+    return res.status(400).json({msg:`${e}`.replace("ValidationError : ", "")})
+  }
+
   const {
     title,
     content,

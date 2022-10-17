@@ -58,19 +58,19 @@ export default function Layout({ children }: { children: ReactNode }) {
   const getConverseeName = (u: IUser) => (u ? u.name : '')
 
   return (
-    <div className="w-full h-full font-Archivo">
-      <div className="w-full h-full">
+    <div className="w-full h-full min-h-screen font-Archivo">
+      <div className="w-full h-full flex flex-col min-h-screen">
         <div className="fixed top z-50 w-full dark:shadow-none">
           <Header />
           <Nav />
         </div>
         <main
           className={
-            'md:container mx-auto relative flex flex-col h-full pt-20' +
+            'md:container sm:w-full mx-auto relative min-h-screen flex flex-col h-full pt-20' +
             (pathname.includes('/blog/page/') ? ' pb-12' : '')
           }
         >
-          <div className="w-full outline outline-1 dark:outline-zinc-800 outline-zinc-200 bg-white dark:bg-zinc-900 h-full">
+          <div className="w-full min-h-screen outline outline-1 dark:outline-zinc-800 h-full outline-zinc-200 bg-white dark:bg-neutral-900 h-full">
             {searchTags.length > 0 && pathname.includes('/blog/page/') && (
               <div className="flex gap-2 p-6 pb-0 flex-wrap justify-center mx-auto">
                 {searchTags.map((tag: string) => (
@@ -138,7 +138,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         {pathname.includes('/blog/page') && (
           <div
             style={{ bottom: '0' }}
-            className="fixed flex items-center justify-center bg-neutral-900 dark:bg-zinc-900 border-t border-black dark:border-zinc-800 w-screen h-14"
+            className="fixed flex items-center justify-center bg-neutral-900 border-t border-black dark:border-zinc-800 w-screen h-14"
           >
             <BsChevronLeft
               onClick={() => prevPage()}
