@@ -3,10 +3,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   darkMode: "class",
-  purge: [
-    "./src/pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
-  ],
   safelist: [
     /* any tailwind classes that you using inside of ${} string interpolation you need to put here,
     or the classes will be purged from tailwind when the static files are built */
@@ -46,21 +42,17 @@ module.exports = {
     "pt-1",
     "text-zinc-800",
     "text-zinc-500",
-    {
-      pattern: /bg-(red|green|blue)-(100|200|300)/,
-      variants: [
-        "md",
-        "sm",
-        "dark",
-        "hover",
-        "focus",
-        "dark:hover",
-        "sm:hover",
-        "md:hover",
-        "dark:sm",
-        "dark:md",
-      ],
-    },
+    "progressBar",
+    "progress",
+    "dark:text-zinc-500",
+    "sm:text-center",
+    "sm:text-xs",
+    "sm:mx-auto",
+    "md:mx-0",
+    "md:text-right",
+    "md:text-left",
+    "md:justify-end",
+    "md:justify-start",
   ],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
