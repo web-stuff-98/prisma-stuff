@@ -45,11 +45,11 @@ module.exports = {
     "gap-0.5",
     "pt-1",
     "text-zinc-800",
-    "dark:text-zinc-500",
+    "text-zinc-500",
     {
       pattern: /bg-(red|green|blue)-(100|200|300)/,
       variants: [
-        "lg",
+        "md",
         "sm",
         "dark",
         "hover",
@@ -57,6 +57,8 @@ module.exports = {
         "dark:hover",
         "sm:hover",
         "md:hover",
+        "dark:sm",
+        "dark:md",
       ],
     },
   ],
