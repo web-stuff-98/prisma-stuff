@@ -152,8 +152,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default customRateLimit(handler, {
+export default handler
+
+/*export default customRateLimit(handler, {
   numReqs: 12,
   exp: 21600,
   key: "editor-requests",
-});
+});*/
