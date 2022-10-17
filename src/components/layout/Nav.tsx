@@ -123,7 +123,7 @@ export default function Nav() {
               <FiSettings className="text-white w-5 h-full p-0.5" />
             </div>
           )}
-          <div
+          {session && <div
             ref={chatRef}
             onClick={() =>
               mDispatch({ showModal: true, modalType: EModalType.Messages })
@@ -140,7 +140,7 @@ export default function Nav() {
                 +{notifications}
               </div>
             )}
-          </div>
+          </div>}
           {pathname.includes("/blog/page") && <div
             ref={searchRef}
             onClick={() => {
