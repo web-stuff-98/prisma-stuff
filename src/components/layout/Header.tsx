@@ -23,6 +23,7 @@ export default function Header() {
             position: 'absolute',
             left: 'calc(50% - 3rem)',
             top: 'calc(50% - 3rem)',
+            filter: 'opacity(0.5)'
           }}
           className="sm:hidden md:block headerImage"
           src="/prisma.png"

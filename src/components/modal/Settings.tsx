@@ -72,24 +72,6 @@ export default function Settings() {
     <div className="w-full h-full flex flex-col">
       <div className="flex p-2 h-full flex-col gap-1 justify-center mt-1 items-center">
         {renderProfile(findUserData(session?.uid))}
-        <div className="flex flex-col items-center gap-0.5 w-full">
-          <label htmlFor="username" className="font-ArchivoBlack">
-            Update username
-          </label>
-          <div className="flex gap-1">
-            <input
-              name="username"
-              id="username"
-              className="p-1 dark:bg-transparent dark:border-zinc-700 focus:outline-none border w-full rounded-sm shadow-sm text-sm"
-            />
-            <button
-              type="button"
-              className="bg-white w-20 text-xs w-full dark:bg-zinc-800 dark:border-zinc-700 shadow rounded-sm border"
-            >
-              Update
-            </button>
-          </div>
-        </div>
           <button
             type="button"
             onClick={() => deleteAccount()}
