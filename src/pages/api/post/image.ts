@@ -23,7 +23,7 @@ export default async function handler(
   if (req.method !== "POST" && req.method !== "PUT")
     return res.status(405).end();
 
-  /*await redisClient?.connect();
+  await redisClient?.connect();
   const ip = getIP(req);
   const keyVal = await redisClient?.get(`${ip}-editor-requests`);
   if (keyVal) {
@@ -33,7 +33,7 @@ export default async function handler(
       res.status(429).json({ msg: "Too many requests" });
     }
   }
-  await redisClient?.disconnect();*/
+  await redisClient?.disconnect();
 
   const session = await getSession({ req });
   if (!session) return res.status(403).end();

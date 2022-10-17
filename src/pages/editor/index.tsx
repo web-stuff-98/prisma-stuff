@@ -157,7 +157,7 @@ const Editor = ({ post }: { post: any }) => {
   }
 
 
-  const [generating, setGenerating] = useState(false)
+  /*const [generating, setGenerating] = useState(false)
   const generateRandom = async () => {
     setGenerating(true)
     await getRandomContent()
@@ -170,7 +170,7 @@ const Editor = ({ post }: { post: any }) => {
       if(!generating) await generateRandom()
     }, 10000)
     return () => clearInterval(geninterval)
-  }, [])
+  }, [])*/
 
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
   return (
