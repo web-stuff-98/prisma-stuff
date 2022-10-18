@@ -30,27 +30,6 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const { push, query } = useRouter()
 
-  useEffect(() => {
-    if (query.tags) {
-      const { tags: rawTags } = query
-      let tags: string[] = []
-      if (rawTags)
-        tags = String(rawTags)
-          .replaceAll(' ', '+')
-          .split('+')
-          .filter((tag: string) => tag !== '')
-      //sort tags alphabetically using localeCompare so that no redundant query-props key value pairs for tags are stored on redis
-      else tags = tags.sort((a: string, b: string) => a.localeCompare(b))
-      setSearchTags(tags)
-    }
-    if (query.term) {
-      setSearchTerm(
-        String(query.term).toLowerCase().trim().replaceAll('+', ' '),
-        true,
-      )
-      setSearchOpen(true)
-    }
-  }, [])
 
   const setSearchTerm = (to: string, dontPush?: boolean) => {
     setSearchTermState(to)
