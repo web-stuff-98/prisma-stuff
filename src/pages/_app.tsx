@@ -24,8 +24,8 @@ interface IDarkModeCtx {
 }
 
 const darkModeCtxDefaultValue: IDarkModeCtx = {
-  darkMode: true,
-  setDarkMode: (to: boolean) => {},
+  darkMode: false,
+  setDarkMode: () => {},
 }
 
 const DarkModeCtx = createContext<IDarkModeCtx>(darkModeCtxDefaultValue)
