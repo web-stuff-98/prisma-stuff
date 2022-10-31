@@ -1,37 +1,37 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { useFilter } from '../../context/FilterContext'
-import { useUsers } from '../../context/UsersContext'
-import User from '../User'
+import Image from "next/image";
+import Link from "next/link";
+import { useFilter } from "../../context/FilterContext";
+import { useUsers } from "../../context/UsersContext";
+import User from "../User";
 
 export type IPost = {
-  id: string
-  title: string
-  description: string
-  slug: string
-  tags: string[]
-  author: { name: string; image: string; id: string }
-  shares: string[]
-  likes: string[]
-  comments: number
-  createdAt: string
-  blur:string
-}
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  tags: string[];
+  author: { name: string; image: string; id: string; createdAt: string };
+  shares: string[];
+  likes: string[];
+  comments: number;
+  createdAt: string;
+  blur: string;
+};
 
 export default function Post({
   post,
   reverse,
 }: {
-  post: IPost
-  reverse: boolean
+  post: IPost;
+  reverse: boolean;
 }) {
-  const { findUserData } = useUsers()
-  const { autoAddRemoveSearchTag, searchTags } = useFilter()
+  const { findUserData } = useUsers();
+  const { autoAddRemoveSearchTag, searchTags } = useFilter();
 
   return (
     <article
       className={`p-2 md:pl-2 text-center gap-1 sm:flex-col md:flex ${
-        reverse ? 'md:flex-row-reverse' : 'md:flex-row'
+        reverse ? "md:flex-row-reverse" : "md:flex-row"
       } h-full w-full justify-evenly`}
     >
       <Link href={`/blog/post/${post.slug}`}>
@@ -43,45 +43,49 @@ export default function Post({
             blurDataURL={post.blur}
             placeholder="blur"
             src={`https://res.cloudinary.com/dzpzb3uzn/image/upload/v1663407669/prisma-stuff/posts${
-              process.env.NODE_ENV === 'development' ? '/dev' : ''
+              process.env.NODE_ENV === "development" ? "/dev" : ""
             }/${post.id}`}
           />
         </div>
       </Link>
       <div
         className={`flex flex-col justify-center items-${
-          reverse ? 'end' : 'start'
+          reverse ? "end" : "start"
         } mx-auto grow p-1`}
       >
         <h3
-          style={{ lineHeight: '0.866' }}
+          style={{ lineHeight: "0.866" }}
           className={`font-Archivo sm:text-sm md:text-lg sm:mx-auto md:mx-0 sm:py-1 sm:text-center ${
-            reverse ? 'md:text-right' : 'md:text-left'
+            reverse ? "md:text-right" : "md:text-left"
           } font-black`}
         >
           {post.title}
         </h3>
         <p
-          style={{ lineHeight: '0.95' }}
+          style={{ lineHeight: "0.95" }}
           className={`sm:text-center sm:text-xs sm:mx-auto md:mx-0 text-sm ${
-            reverse ? 'md:text-right' : 'md:text-left'
+            reverse ? "md:text-right" : "md:text-left"
           }`}
         >
           {post.description}
         </p>
         <div
-          style={{ filter: 'drop-shadow(0px 1.5px 1px rgba(0,0,0,0.5))' }}
+          style={{ filter: "drop-shadow(0px 1.5px 1px rgba(0,0,0,0.5))" }}
           className={`flex py-1 flex-wrap sm:justify-center ${
-            reverse ? 'md:justify-end' : 'md:justify-start'
+            reverse ? "md:justify-end" : "md:justify-start"
           } items-start w-full gap-0.5`}
         >
           {post.tags.map((tag: string) => (
             <div
               onClick={() => autoAddRemoveSearchTag(tag.trim())}
               key={tag}
-              style={searchTags.includes(tag) ? {
-                filter:"opacity(0.5) saturate(0)"
-              } : {}}
+              style={
+                searchTags.includes(tag)
+                  ? {
+                      filter: "opacity(0.5) saturate(0)",
+                    }
+                  : {}
+              }
               className="text-xs rounded cursor-pointer bg-gray-900 hover:bg-gray-800 text-white hover:bg-gray-600 py-0.5 px-1 sm:py-0 dark:bg-amber-700 dark:hover:bg-amber-600 dark:border-zinc-200 dark:border"
             >
               {tag}
@@ -98,12 +102,12 @@ export default function Post({
         </div>
         <div
           className={`text-xs pt-1 w-full sm:text-center ${
-            reverse ? 'md:text-right' : 'md:text-left'
+            reverse ? "md:text-right" : "md:text-left"
           } text-zinc-800 dark:text-zinc-500`}
         >
-          {post.comments} comment{post.comments === 1 ? '' : 's'}
+          {post.comments} comment{post.comments === 1 ? "" : "s"}
         </div>
       </div>
     </article>
-  )
+  );
 }
