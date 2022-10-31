@@ -211,7 +211,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       description: true,
       tags: true,
       createdAt: true,
-      author: { select: { id: true } },
+      author: {
+        select: { id: true, name: true, image: true, createdAt: true },
+      },
       likes: true,
       shares: true,
       slug: true,

@@ -92,7 +92,7 @@ export default function Post({
           <User
             key={post.id}
             reverse={reverse}
-            userData={findUserData(post.author.id)}
+            userData={post.author}
             post={post}
           />
         </div>
