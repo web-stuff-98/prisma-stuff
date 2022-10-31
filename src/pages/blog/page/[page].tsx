@@ -133,6 +133,8 @@ export const getServerSideProps: GetServerSideProps = async ({
               select: {
                 id: true,
                 name: true,
+                createdAt: true,
+                image: true,
               },
             },
             slug: true,
