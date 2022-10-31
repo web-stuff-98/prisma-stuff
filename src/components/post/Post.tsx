@@ -10,7 +10,7 @@ export type IPost = {
   description: string;
   slug: string;
   tags: string[];
-  author: { name: string; image: string; id: string; createdAt: string };
+  author: { name: string; image: string; id: string; createdAt: Date };
   shares: string[];
   likes: string[];
   comments: number;
@@ -25,7 +25,6 @@ export default function Post({
   post: IPost;
   reverse: boolean;
 }) {
-  const { findUserData } = useUsers();
   const { autoAddRemoveSearchTag, searchTags } = useFilter();
 
   return (
