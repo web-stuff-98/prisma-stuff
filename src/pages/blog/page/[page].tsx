@@ -106,7 +106,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }: GetServerSidePropsContext) => {
   /* The users parsed query parameters. Stored as keyname on redis so cached props can be looked up */
   //@ts-ignore
-  const { props } = await getPage(params, {rawTags:query.tags || "", rawTerm: query.term || ""})
+  const { props } = await getPage(prisma, {rawTags:query.tags || "", rawTerm: query.term || ""}, params)
   return { props }
 };
 

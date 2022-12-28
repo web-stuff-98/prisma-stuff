@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import redisClient from "./redis";
 
 type Query = {
@@ -8,9 +9,7 @@ type Params = {
   page: number;
 };
 
-import prisma from "./prisma";
-
-async function getPage(query?: Query, params?: Params) {
+async function getPage(prisma:PrismaClient, query?: Query, params?: Params) {
   await redisClient?.connect();
 
   // popular posts, just the first 8 posts with the most likes
