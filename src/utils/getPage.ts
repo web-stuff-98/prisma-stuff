@@ -19,37 +19,38 @@ async function getPage(query?: Query, params?: Params) {
   if (cachedPopularPosts) {
     popular = JSON.parse(cachedPopularPosts);
   } else {
+    const p = await prisma.post.findMany({
+      where: {
+        published: true,
+        imagePending: false,
+      },
+      select: {
+        title: true,
+        description: true,
+        id: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            image: true,
+          },
+        },
+        slug: true,
+      },
+      orderBy: {
+        likes: {
+          _count: "desc",
+        },
+      },
+      take: 8,
+    });
     popular = JSON.parse(
       JSON.stringify({
-        popular: await prisma.post.findMany({
-          where: {
-            published: true,
-            imagePending: false,
-          },
-          select: {
-            title: true,
-            description: true,
-            id: true,
-            author: {
-              select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                image: true,
-              },
-            },
-            slug: true,
-          },
-          orderBy: {
-            likes: {
-              _count: "desc",
-            },
-          },
-          take: 8,
-        }),
+        popular: p,
       })
     );
-    const expiration: number = process.env.NODE_ENV === "development" ? 5 : 120;
+    const expiration: number = process.env.NODE_ENV === "development" ? 5 : 15;
     await redisClient?.setEx("popular", expiration, JSON.stringify(popular));
   }
 
@@ -195,4 +196,4 @@ async function getPage(query?: Query, params?: Params) {
   return { props };
 }
 
-export default getPage
+export default getPage;
