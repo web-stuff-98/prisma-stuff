@@ -63,7 +63,7 @@ async function getPage(query?: Query, params?: Params) {
     rawTags = query.rawTags;
     rawTerm = query.rawTerm;
     clientQueryInput = {
-      pageOffset: Number(Math.max(Number(params?.page) - 1, 0) * 20),
+      pageOffset: Math.ceil(Number(Math.max(Number(params?.page) - 1, 0) * 20)),
       ...(rawTags
         ? {
             tags: rawTags
