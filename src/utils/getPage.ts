@@ -1,5 +1,7 @@
 import redisClient from "./redis";
 
+import prisma from "./prisma";
+
 type Query = {
   rawTags: string;
   rawTerm: string;
