@@ -3,8 +3,6 @@ import Head from "next/head";
 import { useRef } from "react";
 import Post, { IPost } from "../../../components/post/Post";
 
-import prisma from "../../../utils/prisma";
-
 import { useEffect, useState } from "react";
 import { useUsers } from "../../../context/UsersContext";
 import { useFilter } from "../../../context/FilterContext";

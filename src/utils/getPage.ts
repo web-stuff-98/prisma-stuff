@@ -8,6 +8,8 @@ type Params = {
   page: number;
 };
 
+import prisma from "./prisma";
+
 async function getPage(query?: Query, params?: Params) {
   await redisClient?.connect();
 
