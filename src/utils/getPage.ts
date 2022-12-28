@@ -8,7 +8,7 @@ type Params = {
   page: number;
 };
 
-export default async function (query?: Query, params?: Params) {
+async function getPage(query?: Query, params?: Params) {
   await redisClient?.connect();
 
   // popular posts, just the first 8 posts with the most likes
@@ -192,3 +192,5 @@ export default async function (query?: Query, params?: Params) {
 
   return { props };
 }
+
+export default getPage
